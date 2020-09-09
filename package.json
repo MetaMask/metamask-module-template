@@ -6,7 +6,7 @@
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "test": "yarn jest",
+    "test": "jest",
     "test": "jest --watch",
     "prepublishOnly": "npm run build",
     "lint": "eslint --ext .ts,.js .",
