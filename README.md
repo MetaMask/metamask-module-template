@@ -24,9 +24,9 @@ _Add examples here_
 
 ## Testing
 
-`npm test` or `yarn test` to run the tests once.
+Run `yarn test` to run the tests once.
 
-To watch, install [jest](https://jestjs.io/) globally, and run `jest --watch`, or `npm run watch` or `yarn watch`.
+To run tests on file changes, run `yarn test:watch`.
 
 ## Release & Publishing
 
