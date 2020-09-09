@@ -22,6 +22,12 @@ _Add examples here_
 
 _Add examples here_
 
+## Testing
+
+`npm test` or `yarn test` to run the tests once.
+
+To watch, install [jest](https://jestjs.io/) globally, and run `jest --watch`, or `npm run watch` or `yarn watch`.
+
 ## Release & Publishing
 
 The project follows the same release process as the other libraries in the MetaMask organization:
