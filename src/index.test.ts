@@ -1,4 +1,4 @@
-const greeter = require('./index');
+import greeter from './index';
 
 describe('Test', () => {
   it('greets', () => {

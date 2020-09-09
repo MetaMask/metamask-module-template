@@ -1,3 +1,3 @@
-module.exports = function (name:string): string {
+export default function (name:string): string {
   return `Hello, ${name}!`;
 }
