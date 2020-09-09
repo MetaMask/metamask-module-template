@@ -1,1 +1,3 @@
-console.log('Hello, world!');
+module.exports = function (name:string): string {
+  return `Hello, ${name}!`;
+}
