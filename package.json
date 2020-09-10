@@ -1,10 +1,17 @@
 {
-  "name": "metamask-module-template",
+  "name": "@metamask/module-template",
   "version": "1.0.0",
   "description": "",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/",
+    "access": "public"
+  },
   "main": "dist/index.cjs.js",
   "module": "dist/index.es.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watch",
@@ -12,19 +19,16 @@
     "lint": "eslint --ext .ts,.js .",
     "build": "rollup --config"
   },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "@rollup/plugin-commonjs": "^15.0.0",
-    "ts-node": "^9.0.0",
-    "typescript": "^4.0.2"
-  },
+  "license": "MIT",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^15.0.0",
     "@rollup/plugin-node-resolve": "^9.0.0",
     "@types/jest": "^26.0.13",
     "jest": "^26.4.2",
     "rollup": "^2.26.9",
     "rollup-plugin-typescript2": "^0.27.2",
-    "ts-jest": "^26.3.0"
+    "ts-jest": "^26.3.0",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.2"
   }
 }
