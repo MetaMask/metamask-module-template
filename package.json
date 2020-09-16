@@ -17,18 +17,17 @@
     "test:watch": "jest --watch",
     "prepublishOnly": "npm run build",
     "lint": "eslint --ext .ts,.js .",
-    "build": "rollup --config"
+    "build": "npx webpack"
   },
   "license": "MIT",
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^15.0.0",
-    "@rollup/plugin-node-resolve": "^9.0.0",
     "@types/jest": "^26.0.13",
     "jest": "^26.4.2",
-    "rollup": "^2.26.9",
-    "rollup-plugin-typescript2": "^0.27.2",
     "ts-jest": "^26.3.0",
+    "ts-loader": "^8.0.3",
     "ts-node": "^9.0.0",
-    "typescript": "^4.0.2"
+    "typescript": "^4.0.2",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   }
 }
