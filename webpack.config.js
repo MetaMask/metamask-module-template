@@ -17,7 +17,7 @@ module.exports = {
     extensions: [ '.tsx', '.ts', '.js' ],
   },
   output: {
-    filename: 'dist/index.cjs.js',
+    filename: 'index.cjs.js',
     path: path.resolve(__dirname, 'dist'),
   },
   plugins: [
