@@ -1,4 +1,5 @@
 const path = require('path');
+const LavaMoat = require('lavamoat-webpack');
 
 module.exports = {
   entry: './src/index.ts',
@@ -19,4 +20,12 @@ module.exports = {
     filename: 'dist/index.cjs.js',
     path: path.resolve(__dirname, 'dist'),
   },
+  plugins: [
+    new LavaMoat({
+      writeAutoConfig: true,
+    })
+  ],
+  optimization: {
+    concatenateModules: false,
+  }
 };

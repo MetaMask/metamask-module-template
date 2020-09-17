@@ -23,6 +23,7 @@
   "devDependencies": {
     "@types/jest": "^26.0.13",
     "jest": "^26.4.2",
+    "lavamoat-webpack": "^1.0.5",
     "ts-jest": "^26.3.0",
     "ts-loader": "^8.0.3",
     "ts-node": "^9.0.0",
