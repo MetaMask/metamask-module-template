@@ -2,9 +2,12 @@
 
 This module is maintained in the style of the MetaMask team.
 
-It uses:
+It features:
 - Typescript
 - Rollup
+- Jest
+- Eslint
+- Publishes to npm on each release (as long as `NPM_SECRET` is a [github secret](https://docs.github.com/en/actions/reference/encrypted-secrets)).
 
 ## Installation
 
