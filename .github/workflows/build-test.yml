@@ -18,6 +18,10 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
     - run: yarn --frozen-lockfile --ignore-scripts
     - run: yarn build
     - run: yarn lint
