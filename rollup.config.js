@@ -21,7 +21,7 @@ const config = [
       resolve(),
       typescript(),
     ],
-  }
+  },
 ];
 
 export default config;
