@@ -1,4 +1,4 @@
-name: Tests
+name: Build and Test
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
   pull_request:
 
 jobs:
-  build:
-    name: Build & test
+  build-test:
+    name: Build and Test
     runs-on: ubuntu-20.04
     strategy:
       matrix:
@@ -26,6 +26,6 @@ jobs:
     name: All jobs pass
     runs-on: ubuntu-20.04
     needs:
-      - build
+      - build-test
     steps:
     - uses: actions/checkout@v2

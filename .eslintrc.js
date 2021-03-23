@@ -1,4 +1,3 @@
-
 module.exports = {
   env: {
     'browser': true,
@@ -9,9 +8,14 @@ module.exports = {
     '@metamask/eslint-config/config/typescript',
   ],
 
+  plugins: [
+    'json',
+  ],
+
   overrides: [{
     files: [
-      '.eslintrc.js',
+      '*.js',
+      '*.json',
     ],
     parserOptions: {
       sourceType: 'script',
@@ -20,4 +24,10 @@ module.exports = {
       '@metamask/eslint-config/config/nodejs',
     ],
   }],
+
+  ignorePatterns: [
+    '!.eslintrc.js',
+    'dist/',
+    'node_modules/',
+  ],
 };
