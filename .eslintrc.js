@@ -29,7 +29,7 @@ module.exports = {
       extends: [
         '@metamask/eslint-config/config/nodejs',
       ],
-    }
+    },
   ],
 
   ignorePatterns: [
