@@ -10,3 +10,4 @@ updates:
       time: "06:00"
     target-branch: "main"
     versioning-strategy: "increase-if-necessary"
+    open-pull-requests-limit: 10
