@@ -18,7 +18,7 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "prepublishOnly": "yarn lint && yarn build",
-    "lint:eslint": "eslint . --ext js,ts",
+    "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:json": "prettier '**/*.json' --ignore-path .gitignore",
     "lint": "yarn lint:eslint && yarn lint:json --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:json --write",
