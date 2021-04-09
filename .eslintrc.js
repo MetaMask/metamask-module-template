@@ -1,42 +1,29 @@
 module.exports = {
   env: {
-    'browser': true,
+    browser: true,
   },
 
-  extends: [
-    '@metamask/eslint-config',
-  ],
+  extends: ['@metamask/eslint-config'],
 
   overrides: [
     {
       files: ['*.ts'],
-      extends: [
-        '@metamask/eslint-config-typescript',
-      ],
+      extends: ['@metamask/eslint-config-typescript'],
     },
 
     {
       files: ['*.test.ts', '*.test.js'],
-      extends: [
-        '@metamask/eslint-config-jest',
-      ],
+      extends: ['@metamask/eslint-config-jest'],
     },
 
     {
-      files: [
-        '*.js',
-      ],
+      files: ['*.js'],
       parserOptions: {
         sourceType: 'script',
       },
-      extends: [
-        '@metamask/eslint-config-nodejs',
-      ],
+      extends: ['@metamask/eslint-config-nodejs'],
     },
   ],
 
-  ignorePatterns: [
-    '!.eslintrc.js',
-    'dist/',
-  ],
+  ignorePatterns: ['!.eslintrc.js', 'dist/'],
 };
