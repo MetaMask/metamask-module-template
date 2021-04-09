@@ -7,27 +7,30 @@ module.exports = {
     '@metamask/eslint-config',
   ],
 
-  plugins: [
-    'json',
-  ],
-
   overrides: [
     {
       files: ['*.ts'],
       extends: [
-        '@metamask/eslint-config/config/typescript',
+        '@metamask/eslint-config-typescript',
       ],
     },
+
+    {
+      files: ['*.test.ts', '*.test.js'],
+      extends: [
+        '@metamask/eslint-config-jest',
+      ],
+    },
+
     {
       files: [
         '*.js',
-        '*.json',
       ],
       parserOptions: {
         sourceType: 'script',
       },
       extends: [
-        '@metamask/eslint-config/config/nodejs',
+        '@metamask/eslint-config-nodejs',
       ],
     },
   ],
