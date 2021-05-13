@@ -23,7 +23,7 @@
     "lint:misc": "prettier '**/*.json' '**/*.md' '**/*.yml' --single-quote --ignore-path .gitignore",
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
-    "build": "tsc --project ."
+    "build": "mkdir -p dist && rm -rf dist/* && tsc --project ."
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^1.0.5",
