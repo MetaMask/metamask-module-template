@@ -40,7 +40,7 @@ The project follows the same release process as the other libraries in the MetaM
 
 1. Choose a release version.
 
-- We follow SemVer, so the set of changes being released dictates what the release version will be. Analyze the changes to see whether they include any breaking changes, new features, or deprecations. See [the SemVer specification](https://semver.org/) for more information.
+- The release version should be chosen according to SemVer. Analyze the changes to see whether they include any breaking changes, new features, or deprecations, then choose the appropriate SemVer version. See [the SemVer specification](https://semver.org/) for more information.
 
 2. If this release is backporting changes onto a previous release, then ensure there is a major version branch for that version (e.g. `1.x` for a `v1` backport release).
 
@@ -53,7 +53,7 @@ The project follows the same release process as the other libraries in the MetaM
 
 4. Update the changelog to move each change entry into the appropriate change category ([See here](https://keepachangelog.com/en/1.0.0/#types) for the full list of change categories, and the correct ordering), and edit them to be more easily understood by users of the package.
 
-- Generally we omit any changes that don't affect consumers of the package, such as lockfile changes or development environment changes. Exceptions may be made for changes that might be of interest despite not having an effect upon the published package (e.g. major test improvements, security improvements, improved documentation, etc.).
+- Generally any changes that don't affect consumers of the package (e.g. lockfile changes or development environment changes) are omitted. Exceptions may be made for changes that might be of interest despite not having an effect upon the published package (e.g. major test improvements, security improvements, improved documentation, etc.).
 - Try to explain each change in terms that users of the package would understand (e.g. avoid referencing internal variables/concepts).
 - Consolidate related changes into one change entry if it makes it easier to explain.
 - Run `yarn auto-changelog validate --rc` to check that the changelog is correctly formatted.
