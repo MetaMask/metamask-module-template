@@ -48,8 +48,6 @@ The project follows the same release process as the other libraries in the MetaM
 
 3. Trigger the [`workflow_dispatch`](https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_dispatch) event [manually](https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow) for the `Create Release Pull Request` action to create the release PR.
 
-- You can find the workflow dispatch button by navigating to the "Actions" tab of the repository, and clicking on the "Create Release Pull Request" workflow in the left sidebar. There should be a "Run workflow" dropdown in the top row of the workflow run table.
-- Press "Run workflow" dropdown and choose a base branch, and either a release type (e.g. "major", "minor", or "patch") or release version. Then press the "Run workflow" button.
 - For a backport release, the base branch should be the major version branch that you ensured existed in step 2. For a normal release, the base branch should be the main branch for that repository (which should be the default value).
 - This should trigger the [`action-create-release-pr`](https://github.com/MetaMask/action-create-release-pr) workflow to create the release PR.
 
