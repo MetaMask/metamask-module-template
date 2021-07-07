@@ -46,7 +46,7 @@ The project follows the same release process as the other libraries in the MetaM
 
 - The major version branch should be set to the most recent release with that major version. For example, when backporting a `v1.0.2` release, you'd want to ensure there was a `1.x` branch that was set to the `v1.0.1` tag.
 
-3. Trigger the `workflow_dispatch` event for the `Create Release Pull Request` action to create the release PR.
+3. Trigger the [`workflow_dispatch`](https://docs.github.com/en/actions/reference/events-that-trigger-workflows#workflow_dispatch) event [manually](https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow) for the `Create Release Pull Request` action to create the release PR.
 
 - You can find the workflow dispatch button by navigating to the "Actions" tab of the repository, and clicking on the "Create Release Pull Request" workflow in the left sidebar. There should be a "Run workflow" dropdown in the top row of the workflow run table.
 - Press "Run workflow" dropdown and choose a base branch, and either a release type (e.g. "major", "minor", or "patch") or release version. Then press the "Run workflow" button.
@@ -71,5 +71,5 @@ The project follows the same release process as the other libraries in the MetaM
 7. Publish the release on npm.
 
 - Be very careful to use a clean local environment to publish the release, and follow exactly the same steps used during CI.
-- Use `npm publish --dry-run` to examine the release contents to ensure the correct files are included. Compare to previous releases if necessary (e.g. using "https://unpkg.com/browse/[package name]@[package version]/").
+- Use `npm publish --dry-run` to examine the release contents to ensure the correct files are included. Compare to previous releases if necessary (e.g. using `https://unpkg.com/browse/[package name]@[package version]/`).
 - Once you are confident the release contents are correct, publish the release using `npm publish`.
