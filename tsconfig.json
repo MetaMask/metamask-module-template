@@ -6,6 +6,7 @@
     "lib": ["ES2020"],
     "module": "CommonJS",
     "moduleResolution": "Node",
+    "noUncheckedIndexedAccess": true,
     "outDir": "dist",
     "rootDir": "src",
     "sourceMap": true,
