@@ -40,7 +40,6 @@
     "eslint-plugin-jsdoc": "^36.1.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^3.3.1",
-    "is-callable": "^1.2.4",
     "jest": "^26.4.2",
     "prettier": "^2.2.1",
     "prettier-plugin-packagejson": "^2.2.11",
