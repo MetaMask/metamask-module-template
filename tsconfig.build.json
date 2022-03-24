@@ -3,7 +3,6 @@
   "compilerOptions": {
     "declaration": true,
     "declarationDir": "dist",
-    "listFiles": true,
     "rootDir": "src",
     "outDir": "dist"
   },
