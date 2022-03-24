@@ -10,6 +10,13 @@ module.exports = {
     },
 
     {
+      files: ['*.d.ts'],
+      parserOptions: {
+        sourceType: 'script',
+      },
+    },
+
+    {
       files: ['*.js'],
       parserOptions: {
         sourceType: 'script',

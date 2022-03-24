@@ -21,7 +21,7 @@
     "lint": "yarn lint:eslint && yarn lint:misc --check",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "build:clean": "rimraf dist && yarn build",
-    "build": "tsc --project ."
+    "build": "tsc --project tsconfig.build.json"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^1.0.5",
