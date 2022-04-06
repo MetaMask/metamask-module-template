@@ -13,17 +13,19 @@ export default {
   // The directory where Jest should store its cached dependency information
   // cacheDirectory: "/private/var/folders/fk/c3y07g0576j8_2s9m01pk4qw0000gn/T/jest_dx",
 
-  // Automatically clear mock calls, instances and results before every test
-  clearMocks: true,
+  // Automatically clear mock calls, instances and results before every test.
+  // This does not remove any mock implementation that may have been provided,
+  // so we disable it.
+  // clearMocks: true,
 
   // Indicates whether the coverage information should be collected while executing the test
   collectCoverage: true,
 
   // An array of glob patterns indicating a set of files for which coverage information should be collected
-  // collectCoverageFrom: undefined,
+  collectCoverageFrom: ['./src/**/*.ts'],
 
   // The directory where Jest should output its coverage files
-  coverageDirectory: "coverage",
+  coverageDirectory: 'coverage',
 
   // An array of regexp pattern strings used to skip coverage collection
   // coveragePathIgnorePatterns: [
@@ -31,18 +33,20 @@ export default {
   // ],
 
   // Indicates which provider should be used to instrument code for coverage
-  coverageProvider: "v8",
+  coverageProvider: 'v8',
 
   // A list of reporter names that Jest uses when writing coverage reports
-  // coverageReporters: [
-  //   "json",
-  //   "text",
-  //   "lcov",
-  //   "clover"
-  // ],
+  coverageReporters: ['text', 'html'],
 
   // An object that configures minimum threshold enforcement for coverage results
-  // coverageThreshold: undefined,
+  coverageThreshold: {
+    global: {
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
+    },
+  },
 
   // A path to a custom dependency extractor
   // dependencyExtractor: undefined,
@@ -93,7 +97,7 @@ export default {
   // notifyMode: "failure-change",
 
   // A preset that is used as a base for Jest's configuration
-  // preset: undefined,
+  preset: 'ts-jest',
 
   // Run tests from one or more projects
   // projects: undefined,
@@ -101,8 +105,9 @@ export default {
   // Use this configuration option to add custom reporters to Jest
   // reporters: undefined,
 
-  // Automatically reset mock state before every test
-  // resetMocks: false,
+  // "resetMocks" resets all mocks, including mocked modules, to jest.fn(),
+  // between each test case.
+  resetMocks: true,
 
   // Reset the module registry before running each individual test
   // resetModules: false,
@@ -110,8 +115,10 @@ export default {
   // A path to a custom resolver
   // resolver: undefined,
 
-  // Automatically restore mock state and implementation before every test
-  // restoreMocks: false,
+  // "restoreMocks" restores all mocks created using jest.spyOn to their
+  // original implementations, between each test. It does not affect mocked
+  // modules.
+  restoreMocks: true,
 
   // The root directory that Jest should scan for tests and modules within
   // rootDir: undefined,
@@ -164,6 +171,9 @@ export default {
 
   // This option allows use of a custom test runner
   // testRunner: "jest-circus/runner",
+
+  // Reduce the default test timeout from 5s to 2.5s
+  testTimeout: 2500,
 
   // This option sets the URL for the jsdom environment. It is reflected in properties such as location.href
   // testURL: "http://localhost",
