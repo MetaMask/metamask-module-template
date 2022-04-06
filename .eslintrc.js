@@ -21,14 +21,6 @@ module.exports = {
       files: ['*.test.ts', '*.test.js'],
       extends: ['@metamask/eslint-config-jest'],
     },
-
-    {
-      files: ['jest.config.ts'],
-      rules: {
-        // TODO: Migrate to our shared config
-        'import/no-anonymous-default-export': 'off',
-      },
-    },
   ],
 
   ignorePatterns: ['!.eslintrc.js', '!.prettierrc.js', 'dist/'],
