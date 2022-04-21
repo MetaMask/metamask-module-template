@@ -5,13 +5,10 @@
     "inlineSources": true,
     "lib": ["ES2020"],
     "module": "CommonJS",
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "outDir": "dist",
-    "rootDir": "src",
     "sourceMap": true,
     "strict": true,
-    "target": "ES2017"
-  },
-  "exclude": ["./src/**/*.test.ts"],
-  "include": ["./src/**/*.ts"]
+    "target": "es2017"
+  }
 }
