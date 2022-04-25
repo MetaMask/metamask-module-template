@@ -1,12 +1,11 @@
 {
   "compilerOptions": {
-    "declaration": true,
     "esModuleInterop": true,
     "inlineSources": true,
     "lib": ["ES2020"],
     "module": "CommonJS",
     "moduleResolution": "node",
-    "outDir": "dist",
+    "noEmit": true,
     "sourceMap": true,
     "strict": true,
     "target": "es2017"
