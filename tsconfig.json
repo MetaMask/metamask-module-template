@@ -1,12 +1,10 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "inlineSources": true,
     "lib": ["ES2020"],
     "module": "CommonJS",
     "moduleResolution": "node",
     "noEmit": true,
-    "sourceMap": true,
     "strict": true,
     "target": "es2017"
   }
