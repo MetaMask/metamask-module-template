@@ -40,14 +40,20 @@
     "eslint-plugin-jsdoc": "^39.3.6",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "fast-json-patch": "^3.1.1",
+    "is-what": "^4.1.7",
     "jest": "^28.1.3",
     "jest-it-up": "^2.0.2",
+    "just-diff": "^5.0.1",
+    "merge-anything": "^5.0.2",
     "prettier": "^2.7.1",
     "prettier-plugin-packagejson": "^2.2.18",
     "rimraf": "^3.0.2",
     "ts-jest": "^28.0.7",
     "ts-node": "^10.7.0",
-    "typescript": "~4.7.4"
+    "type-fest": "^2.12.2",
+    "typescript": "~4.7.4",
+    "yargs": "^17.4.1"
   },
   "packageManager": "yarn@3.2.1",
   "engines": {

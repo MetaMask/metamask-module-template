@@ -10,7 +10,7 @@ module.exports = {
     },
 
     {
-      files: ['*.js'],
+      files: ['*.js', 'scripts/**/*.ts'],
       parserOptions: {
         sourceType: 'script',
       },
@@ -20,6 +20,15 @@ module.exports = {
     {
       files: ['*.test.ts', '*.test.js'],
       extends: ['@metamask/eslint-config-jest'],
+    },
+
+    {
+      files: ['scripts/**/*.ts'],
+      rules: {
+        'no-implicit-globals': 'off',
+        'node/no-sync': 'off',
+        'node/shebang': 'off',
+      },
     },
   ],
 
