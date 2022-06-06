@@ -34,13 +34,21 @@ jobs:
       - run: yarn build
       - run: yarn lint
       - run: yarn test
+      # Intended to catch any coverage-related changes
+      - name: Require clean working directory after testing
+        shell: bash
+        run: |
+          if ! git diff --exit-code; then
+            echo "Working tree dirty after testing"
+            exit 1
+          fi
       - name: Validate RC changelog
         if: ${{ startsWith(github.head_ref, 'release/') }}
         run: yarn auto-changelog validate --rc
       - name: Validate changelog
         if: ${{ !startsWith(github.head_ref, 'release/') }}
         run: yarn auto-changelog validate
-      - name: Require clean working directory
+      - name: Require clean working directory after building
         shell: bash
         run: |
           if ! git diff --exit-code; then
