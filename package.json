@@ -21,8 +21,8 @@
     "prepublishOnly": "yarn build:clean && yarn lint && yarn test",
     "setup": "yarn install && yarn allow-scripts",
     "test": "jest",
-    "test:watch": "jest --watch",
-    "posttest": "jest-it-up"
+    "posttest": "jest-it-up",
+    "test:watch": "jest --watch"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^1.0.5",
