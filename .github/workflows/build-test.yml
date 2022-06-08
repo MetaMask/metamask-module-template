@@ -44,7 +44,7 @@ jobs:
         shell: bash
         run: |
           if ! git diff --exit-code; then
-            echo "Working tree dirty after building"
+            echo "Working tree dirty at end of job"
             exit 1
           fi
   all-jobs-pass:
