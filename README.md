@@ -22,8 +22,11 @@ _Add examples here_
 
 ### Setup
 
-- Install [Node.js](https://nodejs.org) version 12
-  - If you are using [nvm](https://github.com/creationix/nvm#installation) (recommended) running `nvm use` will automatically choose the right node version for you.
+- Install [Node.js](https://nodejs.org) using one of the following:
+  - (recommended) If you are using [nvm](https://github.com/creationix/nvm#installation) running `nvm use` will [automatically](./nvmrc) choose the right node version for you.
+  - If you are using [nodenv](https://github.com/nodenv/nodenv#installation) including node-build, then run and running `nodenv install` which installs and sets the [correct version](./node-version)
+  - If you are using [asdf](https://asdf-vm.com/guide/getting-started.html#_3-install-asdf) and install [nodejs plugin](https://github.com/asdf-vm/asdf-nodejs/).
+  - manually install the version defined by (./nvmrc)
 - Install [Yarn v3](https://yarnpkg.com/getting-started/install)
 - Run `yarn install` to install dependencies and run any required post-install scripts
 
