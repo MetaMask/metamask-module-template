@@ -81,4 +81,6 @@ jobs:
       - name: Publish
         uses: MetaMask/action-npm-publish@v1.1.0
         with:
+          # This `NPM_TOKEN` needs to be manually set per-repository.
+          # Look in the repository settings under "Environments", and set this token in the `npm-publish` environment.
           npm-token: ${{ secrets.NPM_TOKEN }}
