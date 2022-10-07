@@ -20,4 +20,3 @@ jobs:
     uses: ./.github/workflows/publish-docs.yml
     with:
       destination_dir: latest
-
