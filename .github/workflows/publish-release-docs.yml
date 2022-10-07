@@ -1,0 +1,22 @@
+name: Publish release docs to GitHub Pages
+
+on:
+  push:
+    tags: '*'
+
+jobs:
+  publish-to-gh-pages:
+    name: Publish docs to `${{ github.ref_name }}` directory of `gh-pages` branch
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-docs.yml
+    with:
+      destination_dir: ${{ github.ref_name }}
+
+  publish-to-latest-gh-pages:
+    name: Publish docs to `latest` directory of `gh-pages` branch
+    permissions:
+      contents: write
+    uses: ./.github/workflows/publish-docs.yml
+    with:
+      destination_dir: latest
