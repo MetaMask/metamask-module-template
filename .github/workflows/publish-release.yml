@@ -100,7 +100,6 @@ jobs:
         run: ./scripts/get.sh ".version" "RELEASE_VERSION"
 
   publish-release-to-gh-pages:
-    runs-on: ubuntu-latest
     needs: get-release-version
     name: Publish docs to `${{ needs.get-release-version.outputs.RELEASE_VERSION }}` directory of `gh-pages` branch
     permissions:
@@ -110,7 +109,6 @@ jobs:
       destination_dir: ${{ needs.get-release-version.outputs.RELEASE_VERSION }}
 
   publish-release-to-latest-gh-pages:
-    runs-on: ubuntu-latest
     needs: publish-npm
     name: Publish docs to `latest` directory of `gh-pages` branch
     permissions:
