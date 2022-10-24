@@ -9,9 +9,6 @@ jobs:
   prepare:
     name: Prepare
     runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        node-version: [14.x, 16.x, 18.x]
     outputs:
       YARN_CACHE_DIR: ${{ steps.yarn-cache-dir.outputs.YARN_CACHE_DIR }}
       YARN_VERSION: ${{ steps.yarn-version.outputs.YARN_VERSION }}
@@ -31,7 +28,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ steps.yarn-cache-dir.outputs.YARN_CACHE_DIR }}
-          key: yarn-cache-${{ runner.os }}-${{ steps.yarn-version.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}-${{ matrix.node-version }}
+          key: yarn-cache-${{ runner.os }}-${{ steps.yarn-version.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
       - name: Install Yarn dependencies
         run: yarn --immutable
   build:
@@ -52,7 +49,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ needs.prepare.outputs.YARN_CACHE_DIR }}
-          key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}-${{ matrix.node-version }}
+          key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
+      - run: yarn --immutable
       - run: yarn build
       - name: Require clean working directory
         shell: bash
@@ -79,7 +77,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ needs.prepare.outputs.YARN_CACHE_DIR }}
-          key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}-${{ matrix.node-version }}
+          key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
+      - run: yarn --immutable
       - run: yarn lint
       - name: Validate RC changelog
         if: ${{ startsWith(github.head_ref, 'release/') }}
@@ -112,7 +111,8 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ needs.prepare.outputs.YARN_CACHE_DIR }}
-          key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}-${{ matrix.node-version }}
+          key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
+      - run: yarn --immutable
       - run: yarn test
       - name: Require clean working directory
         shell: bash
