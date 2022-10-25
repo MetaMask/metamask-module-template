@@ -68,6 +68,7 @@ jobs:
   publish-npm:
     environment: npm-publish
     runs-on: ubuntu-latest
+    foo: bar
     needs: publish-npm-dry-run
     steps:
       - uses: actions/checkout@v3
