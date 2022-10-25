@@ -12,15 +12,15 @@ jobs:
     outputs:
       YARN_CACHE_DIR: ${{ steps.yarn-cache-dir.outputs.YARN_CACHE_DIR }}
       YARN_VERSION: ${{ steps.yarn-version.outputs.YARN_VERSION }}
+    strategy:
+      matrix:
+        node-version: [14.x, 16.x, 18.x]
     steps:
       - uses: actions/checkout@v3
-      - name: Get Node.js version
-        id: nvm
-        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_OUTPUT
       - name: Use Node.js ${{ steps.nvm.outputs.NODE_VERSION }}
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ steps.nvm.outputs.NODE_VERSION }}
+          node-version: ${{ matrix.node-version }}
       - name: Get Yarn cache directory
         run: echo "YARN_CACHE_DIR=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
         id: yarn-cache-dir
@@ -31,7 +31,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ steps.yarn-cache-dir.outputs.YARN_CACHE_DIR }}
-          key: yarn-cache-${{ runner.os }}-${{ steps.yarn-version.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
+          key: yarn-cache-${{ runner.os }}-${{ steps.yarn-version.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}-${{ matrix.node-version }}
       - name: Install Yarn dependencies
         run: yarn --immutable
   build:
@@ -52,7 +52,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ needs.prepare.outputs.YARN_CACHE_DIR }}
-          key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
+          key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}-${{ matrix.node-version }}
       - run: yarn --immutable
       - run: yarn build
       - name: Require clean working directory
@@ -80,7 +80,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ needs.prepare.outputs.YARN_CACHE_DIR }}
-          key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
+          key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}-${{ matrix.node-version }}
       - run: yarn --immutable
       - run: yarn lint
       - name: Validate RC changelog
@@ -114,7 +114,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ needs.prepare.outputs.YARN_CACHE_DIR }}
-          key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}
+          key: yarn-cache-${{ runner.os }}-${{ needs.prepare.outputs.YARN_VERSION }}-${{ hashFiles('yarn.lock') }}-${{ matrix.node-version }}
       - run: yarn --immutable
       - run: yarn test
       - name: Require clean working directory
