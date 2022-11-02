@@ -15,7 +15,7 @@ jobs:
         id: release-name
         run: |
           BRANCH_NAME='${{ github.ref_name }}'
-          echo "::set-output name=RELEASE_VERSION::v${BRANCH_NAME#release/}"
+          echo "RELEASE_VERSION=v${BRANCH_NAME#release/}" >> "$GITHUB_OUTPUT"
   publish-to-gh-pages:
     name: Publish docs to `rc-${{ needs.get-release-version.outputs.release-version }}` directory of `gh-pages` branch
     permissions:
