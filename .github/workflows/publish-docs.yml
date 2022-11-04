@@ -10,7 +10,7 @@ on:
 jobs:
   publish-docs-to-gh-pages:
     name: Publish docs to GitHub Pages
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
