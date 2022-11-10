@@ -18,7 +18,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn2'
+          cache: 'yarn'
       - name: Install Yarn dependencies
         run: yarn --immutable
 
@@ -36,7 +36,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn2'
+          cache: 'yarn'
       - run: yarn --immutable
       - run: yarn build
       - name: Require clean working directory
@@ -61,7 +61,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn2'
+          cache: 'yarn'
       - run: yarn --immutable
       - run: yarn lint
       - name: Validate RC changelog
@@ -92,7 +92,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn2'
+          cache: 'yarn'
       - run: yarn --immutable
       - run: yarn test
       - name: Require clean working directory
