@@ -26,6 +26,8 @@ jobs:
       matrix:
         node-version: [14.x, 16.x, 18.x, 19.x]
     steps:
+      - name: Example failing step
+        run: exit 1
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
