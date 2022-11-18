@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - check-workflows
-      - lint-build-test
+      - build-lint-test
     steps:
       - run: echo "Great success!"
 
