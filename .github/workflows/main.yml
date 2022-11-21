@@ -50,12 +50,11 @@ jobs:
           fi
 
   is-release:
-    # `push` events only trigger this workflow on the `main` branch, so that event indiciates this
-    # is a commit to `main`.
-    # `MetaMask/action-is-release` does not work correctly for `pull_request` events either
-    # See https://github.com/MetaMask/action-is-release/issues/3
-    # This action should work reliably as long as it's only run on `push` events on the main
-    # branch, in a repository that only allows "Squash & merge" commits on the main branch.
+    # Filtering by `push` events ensures that we only release from the `main` branch, which is a
+    # requirement for our npm publishing environment.
+    # The commit author should always be 'github-actions' for releases created by the
+    # 'create-release-branch' workflow, so we filter by that as well to prevent accidentally
+    # triggering a release.
     if: github.event_name == 'push' && startsWith(github.event.head_commit.author.name, 'github-actions')
     needs: all-jobs-pass
     outputs:
