@@ -54,7 +54,7 @@ jobs:
     # is a commit to `main`.
     # `MetaMask/action-is-release` does not work correctly for `pull_request` events either
     # See https://github.com/MetaMask/action-is-release/issues/3
-    # This action should work reliably as long as it's only ron on `push` events on the main
+    # This action should work reliably as long as it's only run on `push` events on the main
     # branch, in a repository that only allows "Squash & merge" commits on the main branch.
     if: github.event_name == 'push'
     needs: all-jobs-pass
