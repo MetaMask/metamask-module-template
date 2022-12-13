@@ -19,6 +19,7 @@
     "lint:eslint": "eslint . --cache --ext js,ts",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' '**/*.yml' '!.yarnrc.yml' --ignore-path .gitignore --no-error-on-unmatched-pattern",
+    "lint:dependencies": "depcheck --config=.depcheckrc.json",
     "prepack": "./scripts/prepack.sh",
     "test": "jest && jest-it-up",
     "test:watch": "jest --watch"
@@ -34,6 +35,7 @@
     "@types/node": "^17.0.23",
     "@typescript-eslint/eslint-plugin": "^5.43.0",
     "@typescript-eslint/parser": "^5.43.0",
+    "depcheck": "^1.4.3",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",
