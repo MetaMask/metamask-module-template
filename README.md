@@ -12,7 +12,7 @@ Follow these instructions when using this template.
     - The README title
     - The README "Usage" section
 - Update the package description
-  - The package description is referenced at the beginning of the README, and in the `description` field of `packge.json`.
+  - The package description is referenced at the beginning of the README, and in the `description` field of `package.json`.
 - Update the `repository` field of `package.json` to point at the new repository URL.
 - Update the README "Usage" and "API" sections, removing them if they aren't needed.
 - Delete these instructions.
