@@ -14,6 +14,7 @@ Follow these instructions when using this template.
 - Update the package description
   - The package description is referenced at the beginning of the README, and in the `description` field of `package.json`.
 - Update the `repository` field of `package.json` to point at the new repository URL.
+- Update the pull request template (`.github/pull_request_template.md`) to remove the `Examples` section that is specific to this template.
 - Update the README "Usage" and "API" sections, removing them if they aren't needed.
 - Delete these instructions.
 
