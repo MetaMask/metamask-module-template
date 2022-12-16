@@ -4,7 +4,7 @@ Thanks for your contribution! Take a moment to answer these questions so that re
 * What is the current state of things and why does it need to change?
 * What is the solution your changes offer and how does it work?
 
-Are there any issues, Slack conversations, Zendesk issues, user stories, etc. reviewers should consult to understand this pull request better? For instance:
+Are there any issues or other links reviewers should consult to understand this pull request better? For instance:
 
 * Fixes #12345
 * See: #67890
