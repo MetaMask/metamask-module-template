@@ -6,16 +6,17 @@ This TypeScript module is maintained in the style of the MetaMask team.
 
 Follow these instructions when using this template.
 
-- Update the package name
-  - The package name is referenced in the following places:
-    - The `name` field of `package.json`
-    - The README title
-    - The README "Usage" section
+- Update the package name, referenced in the following places:
+  - The `name` field of `package.json`
+  - The README title
+  - The README "Usage" section
 - Update the package description
   - The package description is referenced at the beginning of the README, and in the `description` field of `package.json`.
-- Update the `repository` field of `package.json` to point at the new repository URL.
+- Update the repository URL, referenced in the following places:
+  - `repository` field of `package.json`
+  - The links in the API section of the README
 - Update the pull request template (`.github/pull_request_template.md`) to remove the `Examples` section that is specific to this template.
-- Update the README "Usage" and "API" sections, removing them if they aren't needed.
+- Update the README "Usage" section, or remove it if it's not needed.
 - Delete these instructions.
 
 ## Installation
@@ -32,7 +33,10 @@ _Add examples here_
 
 ## API
 
-_Add examples here_
+See our documentation:
+
+- [Latest published API documentation](https://metamask.github.io/metamask-module-template/latest/)
+- [Latest development API documentation](https://metamask.github.io/metamask-module-template/staging/)
 
 ## Contributing
 
