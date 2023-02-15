@@ -21,8 +21,12 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write && yarn lint:dependencies",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' '**/*.yml' '!.yarnrc.yml' --ignore-path .gitignore --no-error-on-unmatched-pattern",
     "prepack": "./scripts/prepack.sh",
+    "sync-git-hooks": "simple-git-hooks",
     "test": "jest && jest-it-up",
     "test:watch": "jest --watch"
+  },
+  "simple-git-hooks": {
+    "pre-push": "yarn lint"
   },
   "devDependencies": {
     "@lavamoat/allow-scripts": "^2.0.3",
@@ -48,6 +52,7 @@
     "prettier": "^2.7.1",
     "prettier-plugin-packagejson": "^2.3.0",
     "rimraf": "^3.0.2",
+    "simple-git-hooks": "^2.8.1",
     "ts-jest": "^28.0.7",
     "ts-node": "^10.7.0",
     "typedoc": "^0.23.15",
@@ -63,7 +68,8 @@
   },
   "lavamoat": {
     "allowScripts": {
-      "@lavamoat/preinstall-always-fail": false
+      "@lavamoat/preinstall-always-fail": false,
+      "simple-git-hooks": false
     }
   }
 }

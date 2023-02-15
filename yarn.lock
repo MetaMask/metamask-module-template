@@ -1320,6 +1320,7 @@ __metadata:
     prettier: ^2.7.1
     prettier-plugin-packagejson: ^2.3.0
     rimraf: ^3.0.2
+    simple-git-hooks: ^2.8.1
     ts-jest: ^28.0.7
     ts-node: ^10.7.0
     typedoc: ^0.23.15
@@ -6434,6 +6435,15 @@ __metadata:
   version: 3.0.7
   resolution: "signal-exit@npm:3.0.7"
   checksum: a2f098f247adc367dffc27845853e9959b9e88b01cb301658cfe4194352d8d2bb32e18467c786a7fe15f1d44b233ea35633d076d5e737870b7139949d1ab6318
+  languageName: node
+  linkType: hard
+
+"simple-git-hooks@npm:^2.8.1":
+  version: 2.8.1
+  resolution: "simple-git-hooks@npm:2.8.1"
+  bin:
+    simple-git-hooks: cli.js
+  checksum: 920d8b3122a102d4790b511a2f033202511f6a08d5105b4e05f05907d407d99f25490da1037643280d622c1951e0d10abacfbeaee64d5f69f1d0e29cf914141f
   languageName: node
   linkType: hard
 

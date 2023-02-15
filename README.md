@@ -38,10 +38,11 @@ _Add examples here_
 
 ### Setup
 
-- Install [Node.js](https://nodejs.org) version 14
-  - If you are using [nvm](https://github.com/creationix/nvm#installation) (recommended) running `nvm use` will automatically choose the right node version for you.
-- Install [Yarn v3](https://yarnpkg.com/getting-started/install)
-- Run `yarn install` to install dependencies and run any required post-install scripts
+- Install [Node.js](https://nodejs.org) version 16.
+  - If you're using [NVM](https://github.com/creationix/nvm#installation) (recommended), `nvm use` will ensure that the right version is installed.
+- Install [Yarn v3](https://yarnpkg.com/getting-started/install).
+- Run `yarn install` to install dependencies and run any required post-install scripts.
+- Run `yarn sync-git-hooks` to add a [Git hook](https://github.com/toplenboren/simple-git-hooks#what-is-a-git-hook) which ensures that all files pass lint before you push a commit.
 
 ### Testing and Linting
 
