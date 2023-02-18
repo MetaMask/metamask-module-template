@@ -10,11 +10,18 @@ module.exports = {
     },
 
     {
-      files: ['*.js'],
+      files: ['*.js', 'scripts/**/*.ts'],
+      extends: ['@metamask/eslint-config-nodejs'],
       parserOptions: {
         sourceType: 'script',
       },
-      extends: ['@metamask/eslint-config-nodejs'],
+    },
+
+    {
+      files: ['scripts/**/*.ts'],
+      rules: {
+        'node/shebang': 'off',
+      },
     },
 
     {
