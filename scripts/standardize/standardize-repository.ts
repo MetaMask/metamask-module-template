@@ -6,7 +6,8 @@ import path from 'path';
 import { ROOT_DIRECTORY } from './constants';
 import { isDirectory, isFile, readJsonFile } from './fs';
 import { flattenObject, getProperty } from './misc-utils';
-import { ProjectAnalysis, Repository, Violation } from './types';
+import { buildProjectCache } from './project';
+import { ProjectAnalysis, Repository, CheckResult } from './types';
 
 /*
 const ManifestStruct = object({
@@ -110,17 +111,22 @@ export async function standardizeRepository({
 }: Repository): Promise<ProjectAnalysis> {
   const startDate = new Date();
   const projectName = path.basename(repositoryDirectoryPath);
+  const cache = buildProjectCache(repositoryDirectoryPath);
 
-  const sourceDirectoryPath = path.join(repositoryDirectoryPath, 'src');
   // const templateManifest = await readJsonFile(
   // path.join(ROOT_DIRECTORY, 'package.json'),
   // );
-  const violations: Violation[] = [];
+  const checkResults: CheckResult[] = [];
 
   // Does the src/ directory exist?
-  if (await isDirectory(sourceDirectoryPath)) {
+  if (await cache.fetch('hasSourceDirectory')) {
+    checkResults.push({
+      checkName: 'hasSourceDirectory',
+      entryPath: 'src/',
+      passed: true,
+    });
     // Does the project have a tsconfig.json?
-    if (await isFile(path.join(repositoryDirectoryPath, 'tsconfig.json'))) {
+    if (await cache.fetch('hasTsConfig')) {
       // Are all the settings in tsconfig.json being used?
       const templateJsonContent = await readJsonFile(
         path.join(ROOT_DIRECTORY, 'tsconfig.json'),
@@ -129,24 +135,38 @@ export async function standardizeRepository({
         path.join(repositoryDirectoryPath, 'tsconfig.json'),
       );
       for (const { propertyPath } of flattenObject(templateJsonContent)) {
-        if (!getProperty(projectJsonContent, propertyPath)) {
-          violations.push({
+        if (getProperty(projectJsonContent, propertyPath)) {
+          checkResults.push({
+            checkName: 'hasTsConfigProperty',
             entryPath: 'tsconfig.json',
-            message: `Missing property "${propertyPath.join('.')}".`,
+            details: { propertyPath },
+            passed: true,
+          });
+        } else {
+          checkResults.push({
+            checkName: 'hasTsConfigProperty',
+            entryPath: 'tsconfig.json',
+            details: { propertyPath },
+            passed: false,
+            failureMessage: `Missing property "${propertyPath.join('.')}".`,
           });
         }
       }
     } else {
-      violations.push({
+      checkResults.push({
+        checkName: 'hasTsConfig',
         entryPath: 'tsconfig.json',
-        message:
+        passed: false,
+        failureMessage:
           'This file exists in the module template, but not in this repo.',
       });
     }
   } else {
-    violations.push({
+    checkResults.push({
+      checkName: 'hasSourceDirectory',
       entryPath: 'src/',
-      message:
+      passed: false,
+      failureMessage:
         'This directory exists in the module template, but not in this repo.',
     });
   }
@@ -154,44 +174,78 @@ export async function standardizeRepository({
   const isYarn1ConfigFilePresent = await isFile(
     path.join(repositoryDirectoryPath, '.yarnrc'),
   );
-  const isYarn2ConfigFilePresent = await isFile(
-    path.join(repositoryDirectoryPath, '.yarnrc.yml'),
-  );
-  if (isYarn1ConfigFilePresent && !isYarn2ConfigFilePresent) {
-    violations.push({
+  // const isYarn2ConfigFilePresent = await isFile(
+  // path.join(repositoryDirectoryPath, '.yarnrc.yml'),
+  // );
+  if (isYarn1ConfigFilePresent) {
+    checkResults.push({
+      checkName: 'doesNotHaveYarn1Config',
       entryPath: '.yarnrc',
-      message:
+      passed: false,
+      failureMessage:
         'This file is obsolete. Please convert this project to Yarn v3, making sure to merge these settings into .yarnrc.yml.',
+    });
+  } else {
+    checkResults.push({
+      checkName: 'doesNotHaveYarn1Config',
+      entryPath: '.yarnrc',
+      passed: true,
     });
   }
 
   // Is there a package.json?
   if (await isFile(path.join(repositoryDirectoryPath, 'package.json'))) {
+    checkResults.push({
+      checkName: 'hasFileFromModuleTemplate',
+      entryPath: 'package.json',
+      passed: true,
+    });
+
     const manifest = await readJsonFile(
       path.join(repositoryDirectoryPath, 'package.json'),
     );
 
     if ('name' in manifest) {
-      // do nothing for now
-    } else {
-      violations.push({
+      checkResults.push({
+        checkName: 'manifestHasNameField',
         entryPath: 'package.json',
-        message: 'Package manifest is missing a "name" field.',
+        details: { propertyName: 'name' },
+        passed: true,
+      });
+    } else {
+      checkResults.push({
+        checkName: 'manifestHasNameField',
+        entryPath: 'package.json',
+        details: { propertyName: 'name' },
+        passed: false,
+        failureMessage: 'Package manifest is missing a "name" field.',
       });
     }
 
     if ('version' in manifest) {
-      // do nothing for now
-    } else {
-      violations.push({
+      checkResults.push({
+        checkName: 'manifestHasVersionField',
         entryPath: 'package.json',
-        message: 'Package manifest is missing a "version" field.',
+        details: { propertyName: 'version' },
+        passed: false,
+        failureMessage: 'Package manifest is missing a "version" field.',
+      });
+    } else {
+      checkResults.push({
+        checkName: 'manifestHasVersionField',
+        entryPath: 'package.json',
+        details: { propertyName: 'version' },
+        passed: false,
+        failureMessage: 'Package manifest is missing a "version" field.',
       });
     }
   } else {
-    violations.push({
+    checkResults.push({
+      checkName: 'hasFileFromModuleTemplate',
       entryPath: 'package.json',
-      message: 'This file exists in the module template, but not in this repo.',
+      passed: false,
+      failureMessage:
+        'This file exists in the module template, but not in this repo.',
     });
   }
 
@@ -215,14 +269,19 @@ export async function standardizeRepository({
     const isEntryDirectory = await isDirectory(
       path.join(repositoryDirectoryPath, unknownEntryPath),
     );
-    const message = `This ${
+    const failureMessage = `This ${
       isEntryDirectory ? 'directory' : 'file'
     } does not exist in the module template. Should it be moved to src/?`;
-    const violationPath = isEntryDirectory
+    const checkResultPath = isEntryDirectory
       ? `${unknownEntryPath}/`
       : unknownEntryPath;
 
-    violations.push({ entryPath: violationPath, message });
+    checkResults.push({
+      checkName: 'doesNotHaveFileNotInModuleTemplate',
+      entryPath: checkResultPath,
+      passed: false,
+      failureMessage,
+    });
   }
 
   const endDate = new Date();
@@ -230,6 +289,6 @@ export async function standardizeRepository({
   return {
     projectName,
     elapsedTime: endDate.getTime() - startDate.getTime(),
-    violations,
+    checkResults,
   };
 }

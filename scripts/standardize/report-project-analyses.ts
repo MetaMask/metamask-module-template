@@ -1,35 +1,40 @@
 import chalk from 'chalk';
 
 import { buildDivider } from './misc-utils';
-import { ProjectAnalysis, Violation } from './types';
+import {
+  CheckResult,
+  FailedCheckResult,
+  ProjectAnalysis,
+  isFailedCheckResult,
+} from './types';
 
-type IndexedViolations = Record<string, Violation[]>;
+type IndexedFailedCheckResults = Record<string, FailedCheckResult[]>;
 type IndexedProjectAnalysis = ProjectAnalysis & {
-  violationsByEntryPath: IndexedViolations;
+  failedCheckResultsByEntryPath: IndexedFailedCheckResults;
 };
 type IndexedProjectAnalyses = Record<string, IndexedProjectAnalysis>;
 
 /**
  * TODO.
  *
- * @param violations - TODO.
+ * @param checkResults - TODO.
  * @returns TODO.
  */
-function indexViolationsByEntryPath(
-  violations: Violation[],
-): IndexedViolations {
-  return violations.reduce<IndexedViolations>((obj, violation) => {
-    const existingViolations = obj[violation.entryPath];
+function indexFailedCheckResultsByEntryPath(
+  checkResults: FailedCheckResult[],
+): IndexedFailedCheckResults {
+  return checkResults.reduce<IndexedFailedCheckResults>((obj, checkResult) => {
+    const existingCheckResults = obj[checkResult.entryPath];
 
-    if (existingViolations === undefined) {
+    if (existingCheckResults === undefined) {
       return {
         ...obj,
-        [violation.entryPath]: [violation],
+        [checkResult.entryPath]: [checkResult],
       };
     }
     return {
       ...obj,
-      [violation.entryPath]: [...existingViolations, violation],
+      [checkResult.entryPath]: [...existingCheckResults, checkResult],
     };
   }, {});
 }
@@ -45,13 +50,14 @@ function indexProjectAnalysesByName(
 ): IndexedProjectAnalyses {
   return projectAnalyses.reduce<IndexedProjectAnalyses>(
     (obj, projectAnalysis) => {
+      const failedCheckResults =
+        projectAnalysis.checkResults.filter(isFailedCheckResult);
       return {
         ...obj,
         [projectAnalysis.projectName]: {
           ...projectAnalysis,
-          violationsByEntryPath: indexViolationsByEntryPath(
-            projectAnalysis.violations,
-          ),
+          failedCheckResultsByEntryPath:
+            indexFailedCheckResultsByEntryPath(failedCheckResults),
         },
       };
     },
@@ -83,26 +89,26 @@ export function reportProjectAnalyses(projectAnalyses: ProjectAnalysis[]) {
     );
 
     const entryPaths = Object.keys(
-      projectAnalysis.violationsByEntryPath,
+      projectAnalysis.failedCheckResultsByEntryPath,
     ).sort();
     if (entryPaths.length > 0) {
       console.log(
         `Analyzed project in ${chalk.blue(
           projectAnalysis.elapsedTime,
         )} ms. Found ${chalk.blue(
-          projectAnalysis.violations.length,
-        )} violation(s) in ${chalk.blue(entryPaths.length)} file(s).\n`,
+          projectAnalysis.checkResults.length,
+        )} checkResult(s) in ${chalk.blue(entryPaths.length)} file(s).\n`,
       );
     }
     for (const entryPath of entryPaths) {
       console.log(`- ${chalk.yellow(entryPath)}`);
-      const entryPathViolations =
-        projectAnalysis.violationsByEntryPath[entryPath];
-      if (entryPathViolations === undefined) {
+      const entryPathCheckResults =
+        projectAnalysis.failedCheckResultsByEntryPath[entryPath];
+      if (entryPathCheckResults === undefined) {
         continue;
       }
-      for (const violation of entryPathViolations) {
-        console.log(`  - ${violation.message}`);
+      for (const checkResult of entryPathCheckResults) {
+        console.log(`  - ${checkResult.failureMessage}`);
       }
     }
   }
