@@ -42,6 +42,7 @@
     "chalk": "^4.0.0",
     "debug": "^4.3.4",
     "depcheck": "^1.4.3",
+    "dependency-graph": "^0.11.0",
     "eslint": "^8.27.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-import": "^2.26.0",

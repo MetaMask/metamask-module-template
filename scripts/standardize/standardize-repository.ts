@@ -1,25 +1,15 @@
-import fs from 'fs';
 import path from 'path';
-// import {literal, object, string} from 'superstruct';
-// import { format } from 'util';
+import { inspect } from 'util';
 
-import { ROOT_DIRECTORY } from './constants';
-import { isDirectory, isFile, readJsonFile } from './fs';
-import { flattenObject, getProperty } from './misc-utils';
-import { buildProjectCache } from './project';
-import { ProjectAnalysis, Repository, CheckResult } from './types';
-
-/*
-const ManifestStruct = object({
-  name: string(),
-  version: string(),
-  description: string(),
-  repository: object({
-    type: literal('git'),
-    url: literal('https://github.com/MetaMask/metamask-module-template'),
-  }),
-});
-*/
+import { buildProjectCache } from './project-cache';
+import { RuleNode, buildRuleTree } from './rule-tree';
+import {
+  ProjectAnalysis,
+  ProjectCache,
+  Repository,
+  RuleExecutionResultNode,
+  RuleName,
+} from './types';
 
 // RULES
 //
@@ -110,185 +100,75 @@ export async function standardizeRepository({
   directoryPath: repositoryDirectoryPath,
 }: Repository): Promise<ProjectAnalysis> {
   const startDate = new Date();
+
   const projectName = path.basename(repositoryDirectoryPath);
-  const cache = buildProjectCache(repositoryDirectoryPath);
+  const projectCache = buildProjectCache(repositoryDirectoryPath);
+  const entryRuleNodes = buildRuleTree();
+  console.log('entryRuleNodes', inspect(entryRuleNodes, { depth: null }));
+  process.exit(1);
 
-  // const templateManifest = await readJsonFile(
-  // path.join(ROOT_DIRECTORY, 'package.json'),
-  // );
-  const checkResults: CheckResult[] = [];
-
-  // Does the src/ directory exist?
-  if (await cache.fetch('hasSourceDirectory')) {
-    checkResults.push({
-      checkName: 'hasSourceDirectory',
-      entryPath: 'src/',
-      passed: true,
-    });
-    // Does the project have a tsconfig.json?
-    if (await cache.fetch('hasTsConfig')) {
-      // Are all the settings in tsconfig.json being used?
-      const templateJsonContent = await readJsonFile(
-        path.join(ROOT_DIRECTORY, 'tsconfig.json'),
-      );
-      const projectJsonContent = await readJsonFile(
-        path.join(repositoryDirectoryPath, 'tsconfig.json'),
-      );
-      for (const { propertyPath } of flattenObject(templateJsonContent)) {
-        if (getProperty(projectJsonContent, propertyPath)) {
-          checkResults.push({
-            checkName: 'hasTsConfigProperty',
-            entryPath: 'tsconfig.json',
-            details: { propertyPath },
-            passed: true,
-          });
-        } else {
-          checkResults.push({
-            checkName: 'hasTsConfigProperty',
-            entryPath: 'tsconfig.json',
-            details: { propertyPath },
-            passed: false,
-            failureMessage: `Missing property "${propertyPath.join('.')}".`,
-          });
-        }
-      }
-    } else {
-      checkResults.push({
-        checkName: 'hasTsConfig',
-        entryPath: 'tsconfig.json',
-        passed: false,
-        failureMessage:
-          'This file exists in the module template, but not in this repo.',
-      });
-    }
-  } else {
-    checkResults.push({
-      checkName: 'hasSourceDirectory',
-      entryPath: 'src/',
-      passed: false,
-      failureMessage:
-        'This directory exists in the module template, but not in this repo.',
-    });
-  }
-
-  const isYarn1ConfigFilePresent = await isFile(
-    path.join(repositoryDirectoryPath, '.yarnrc'),
-  );
-  // const isYarn2ConfigFilePresent = await isFile(
-  // path.join(repositoryDirectoryPath, '.yarnrc.yml'),
-  // );
-  if (isYarn1ConfigFilePresent) {
-    checkResults.push({
-      checkName: 'doesNotHaveYarn1Config',
-      entryPath: '.yarnrc',
-      passed: false,
-      failureMessage:
-        'This file is obsolete. Please convert this project to Yarn v3, making sure to merge these settings into .yarnrc.yml.',
-    });
-  } else {
-    checkResults.push({
-      checkName: 'doesNotHaveYarn1Config',
-      entryPath: '.yarnrc',
-      passed: true,
-    });
-  }
-
-  // Is there a package.json?
-  if (await isFile(path.join(repositoryDirectoryPath, 'package.json'))) {
-    checkResults.push({
-      checkName: 'hasFileFromModuleTemplate',
-      entryPath: 'package.json',
-      passed: true,
-    });
-
-    const manifest = await readJsonFile(
-      path.join(repositoryDirectoryPath, 'package.json'),
-    );
-
-    if ('name' in manifest) {
-      checkResults.push({
-        checkName: 'manifestHasNameField',
-        entryPath: 'package.json',
-        details: { propertyName: 'name' },
-        passed: true,
-      });
-    } else {
-      checkResults.push({
-        checkName: 'manifestHasNameField',
-        entryPath: 'package.json',
-        details: { propertyName: 'name' },
-        passed: false,
-        failureMessage: 'Package manifest is missing a "name" field.',
-      });
-    }
-
-    if ('version' in manifest) {
-      checkResults.push({
-        checkName: 'manifestHasVersionField',
-        entryPath: 'package.json',
-        details: { propertyName: 'version' },
-        passed: false,
-        failureMessage: 'Package manifest is missing a "version" field.',
-      });
-    } else {
-      checkResults.push({
-        checkName: 'manifestHasVersionField',
-        entryPath: 'package.json',
-        details: { propertyName: 'version' },
-        passed: false,
-        failureMessage: 'Package manifest is missing a "version" field.',
-      });
-    }
-  } else {
-    checkResults.push({
-      checkName: 'hasFileFromModuleTemplate',
-      entryPath: 'package.json',
-      passed: false,
-      failureMessage:
-        'This file exists in the module template, but not in this repo.',
-    });
-  }
-
-  // If the package is not private, does it have a LICENSE?
-  if (await isFile(path.join(repositoryDirectoryPath, 'LICENSE'))) {
-    // TODO
-  }
-
-  // Are there any other unknown paths in the root of the project?
-  const knownEntryPaths = (await fs.promises.readdir(ROOT_DIRECTORY)).concat([
-    '.yarnrc',
-    'LICENSE',
-  ]);
-  const entryPathsInProjectRoot = await fs.promises.readdir(
+  const ruleExecutionResultNodes = await runRules(entryRuleNodes, {
+    projectCache,
     repositoryDirectoryPath,
-  );
-  const unknownEntryPaths = entryPathsInProjectRoot.filter(
-    (entryPath) => !knownEntryPaths.includes(entryPath),
-  );
-  for (const unknownEntryPath of unknownEntryPaths) {
-    const isEntryDirectory = await isDirectory(
-      path.join(repositoryDirectoryPath, unknownEntryPath),
-    );
-    const failureMessage = `This ${
-      isEntryDirectory ? 'directory' : 'file'
-    } does not exist in the module template. Should it be moved to src/?`;
-    const checkResultPath = isEntryDirectory
-      ? `${unknownEntryPath}/`
-      : unknownEntryPath;
-
-    checkResults.push({
-      checkName: 'doesNotHaveFileNotInModuleTemplate',
-      entryPath: checkResultPath,
-      passed: false,
-      failureMessage,
-    });
-  }
+  });
 
   const endDate = new Date();
 
   return {
     projectName,
     elapsedTime: endDate.getTime() - startDate.getTime(),
-    checkResults,
+    ruleExecutionResultNodes,
+  };
+}
+
+/**
+ * TODO.
+ *
+ * @param ruleNodes - TODO.
+ * @param verifyArgs - TODO.
+ * @param verifyArgs.projectCache - TODO.
+ * @param verifyArgs.repositoryDirectoryPath - TODO.
+ * @returns TODO.
+ */
+async function runRules(
+  ruleNodes: RuleNode<RuleName>[],
+  verifyArgs: {
+    projectCache: ProjectCache;
+    repositoryDirectoryPath: string;
+  },
+): Promise<RuleExecutionResultNode<RuleName>[]> {
+  const ruleExecutionResultNodes: RuleExecutionResultNode<RuleName>[] = [];
+  for (const ruleNode of ruleNodes) {
+    await runRule(ruleNode, verifyArgs);
+  }
+  return ruleExecutionResultNodes;
+}
+
+/**
+ * TODO.
+ *
+ * @param ruleNode - TODO.
+ * @param verifyArgs - TODO.
+ * @param verifyArgs.projectCache - TODO.
+ * @param verifyArgs.repositoryDirectoryPath - TODO.
+ * @returns TODO.
+ */
+async function runRule<Name extends RuleName>(
+  ruleNode: RuleNode<Name>,
+  verifyArgs: {
+    projectCache: ProjectCache;
+    repositoryDirectoryPath: string;
+  },
+): Promise<RuleExecutionResultNode<Name>> {
+  console.log('Running rule', ruleNode.rule.name);
+
+  const ruleExecutionResult = await ruleNode.rule.verify(verifyArgs);
+  const children: RuleExecutionResultNode<RuleName>[] =
+    ruleNode.children.length > 0
+      ? await runRules(ruleNode.children, verifyArgs)
+      : [];
+  return {
+    value: ruleExecutionResult,
+    children,
   };
 }

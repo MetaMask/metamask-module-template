@@ -1,5 +1,4 @@
-import { PlainObject, isObject } from '@metamask/utils';
-import assert from 'assert';
+import { isObject } from '@metamask/utils';
 import debug from 'debug';
 import execa from 'execa';
 import { ErrorWithCause } from 'pony-cause';
@@ -99,9 +98,11 @@ export function knownKeysOf<K extends string | number | symbol>(
 }
 
 /**
+ * TODO.
  *
- * @param object
- * @param rootPropertyPath
+ * @param object - TODO.
+ * @param rootPropertyPath - TODO.
+ * @returns TODO.
  */
 export function flattenObject(
   object: Record<string, any>,
@@ -120,11 +121,13 @@ export function flattenObject(
 }
 
 /**
+ * TODO.
  *
- * @param object
- * @param propertyPath
+ * @param object - TODO.
+ * @param propertyPath - TODO.
+ * @returns TODO.
  */
-export function getProperty(
+export function getPropertyViaPath(
   object: Record<string, any>,
   propertyPath: string[],
 ): any {
@@ -137,16 +140,18 @@ export function getProperty(
   const value = object[firstPath];
 
   if (typeof value === 'object' && value !== null) {
-    return getProperty(value, propertyPath.slice(1));
+    return getPropertyViaPath(value, propertyPath.slice(1));
   }
 
   return value;
 }
 
 /**
+ * TODO.
  *
- * @param character
- * @param desiredLength
+ * @param character - TODO.
+ * @param desiredLength - TODO.
+ * @returns TODO.
  */
 export function buildDivider(character: string, desiredLength: number): string {
   let divider = '';

@@ -1,43 +1,9 @@
 import chalk from 'chalk';
 
 import { buildDivider } from './misc-utils';
-import {
-  CheckResult,
-  FailedCheckResult,
-  ProjectAnalysis,
-  isFailedCheckResult,
-} from './types';
+import { ProjectAnalysis, RuleExecutionResultNode, RuleName } from './types';
 
-type IndexedFailedCheckResults = Record<string, FailedCheckResult[]>;
-type IndexedProjectAnalysis = ProjectAnalysis & {
-  failedCheckResultsByEntryPath: IndexedFailedCheckResults;
-};
-type IndexedProjectAnalyses = Record<string, IndexedProjectAnalysis>;
-
-/**
- * TODO.
- *
- * @param checkResults - TODO.
- * @returns TODO.
- */
-function indexFailedCheckResultsByEntryPath(
-  checkResults: FailedCheckResult[],
-): IndexedFailedCheckResults {
-  return checkResults.reduce<IndexedFailedCheckResults>((obj, checkResult) => {
-    const existingCheckResults = obj[checkResult.entryPath];
-
-    if (existingCheckResults === undefined) {
-      return {
-        ...obj,
-        [checkResult.entryPath]: [checkResult],
-      };
-    }
-    return {
-      ...obj,
-      [checkResult.entryPath]: [...existingCheckResults, checkResult],
-    };
-  }, {});
-}
+type IndexedProjectAnalyses = Record<string, ProjectAnalysis>;
 
 /**
  * TODO.
@@ -50,19 +16,45 @@ function indexProjectAnalysesByName(
 ): IndexedProjectAnalyses {
   return projectAnalyses.reduce<IndexedProjectAnalyses>(
     (obj, projectAnalysis) => {
-      const failedCheckResults =
-        projectAnalysis.checkResults.filter(isFailedCheckResult);
       return {
         ...obj,
-        [projectAnalysis.projectName]: {
-          ...projectAnalysis,
-          failedCheckResultsByEntryPath:
-            indexFailedCheckResultsByEntryPath(failedCheckResults),
-        },
+        [projectAnalysis.projectName]: projectAnalysis,
       };
     },
     {},
   );
+}
+
+/**
+ * TODO.
+ *
+ * @param ruleExecutionResultNodes - TODO.
+ * @param level - TODO.
+ */
+function reportRuleExecutionResultNodes(
+  ruleExecutionResultNodes: RuleExecutionResultNode<RuleName>[],
+  level = 0,
+) {
+  let indentation = '';
+  for (let i = 0; i < level; i++) {
+    indentation += ' ';
+  }
+  ruleExecutionResultNodes.forEach((ruleExecutionResultNode) => {
+    console.log(
+      `${indentation}- ${ruleExecutionResultNode.value.ruleDescription} ${
+        ruleExecutionResultNode.value.passed ? '✅' : '❌'
+      }`,
+    );
+    if ('failures' in ruleExecutionResultNode.value) {
+      console.log(
+        `${indentation}  ${chalk.yellow(
+          ruleExecutionResultNode.value.failures.join(', '),
+        )}`,
+      );
+    }
+
+    reportRuleExecutionResultNodes(ruleExecutionResultNode.children, level + 1);
+  });
 }
 
 /**
@@ -88,29 +80,17 @@ export function reportProjectAnalyses(projectAnalyses: ProjectAnalysis[]) {
       )}\n`,
     );
 
-    const entryPaths = Object.keys(
-      projectAnalysis.failedCheckResultsByEntryPath,
-    ).sort();
-    if (entryPaths.length > 0) {
-      console.log(
-        `Analyzed project in ${chalk.blue(
-          projectAnalysis.elapsedTime,
-        )} ms. Found ${chalk.blue(
-          projectAnalysis.checkResults.length,
-        )} checkResult(s) in ${chalk.blue(entryPaths.length)} file(s).\n`,
-      );
-    }
-    for (const entryPath of entryPaths) {
-      console.log(`- ${chalk.yellow(entryPath)}`);
-      const entryPathCheckResults =
-        projectAnalysis.failedCheckResultsByEntryPath[entryPath];
-      if (entryPathCheckResults === undefined) {
-        continue;
-      }
-      for (const checkResult of entryPathCheckResults) {
-        console.log(`  - ${checkResult.failureMessage}`);
-      }
-    }
+    /*
+    console.log(
+      `Analyzed project in ${chalk.blue(
+        projectAnalysis.elapsedTime,
+      )} ms. Found ${chalk.blue(
+        projectAnalysis.checkResults.length,
+      )} checkResult(s) in ${chalk.blue(entryPaths.length)} file(s).\n`,
+    );
+    */
+
+    reportRuleExecutionResultNodes(projectAnalysis.ruleExecutionResultNodes);
   }
 
   console.log('');

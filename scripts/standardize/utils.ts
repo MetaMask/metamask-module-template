@@ -1,3 +1,5 @@
+// Copy from @metamask/utils
+// TODO: Needed?
 export const hasProperty = <
   // eslint-disable-next-line @typescript-eslint/ban-types
   ObjectToCheck extends Object,
