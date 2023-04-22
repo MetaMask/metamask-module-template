@@ -836,6 +836,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@lavamoat/preinstall-always-fail@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@lavamoat/preinstall-always-fail@npm:1.0.0"
+  checksum: 93af02b34c8a7d99296025fd2052272f26310b38998c07b39f698ba395a5543b450dea41d3a26005c83a634738e6f7de01a7cea0eb5552cfe83abe619c3e7b31
+  languageName: node
+  linkType: hard
+
 "@metamask/auto-changelog@npm:^3.1.0":
   version: 3.1.0
   resolution: "@metamask/auto-changelog@npm:3.1.0"
@@ -904,6 +911,7 @@ __metadata:
   resolution: "@metamask/module-template@workspace:."
   dependencies:
     "@lavamoat/allow-scripts": ^2.0.3
+    "@lavamoat/preinstall-always-fail": ^1.0.0
     "@metamask/auto-changelog": ^3.1.0
     "@metamask/eslint-config": ^11.0.1
     "@metamask/eslint-config-jest": ^11.0.0
