@@ -1,13 +1,13 @@
 {
   "name": "@metamask/module-template",
   "version": "0.0.0",
-  "description": "The MetaMask Node module template.",
+  "description": "The MetaMask Node module template",
   "repository": {
     "type": "git",
     "url": "https://github.com/MetaMask/metamask-module-template.git"
   },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "files": [
     "dist/"
   ],
@@ -15,12 +15,13 @@
     "build": "tsc --project tsconfig.build.json",
     "build:clean": "rimraf dist && yarn build",
     "build:docs": "typedoc",
-    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:dependencies --check && yarn lint:changelog",
+    "lint": "yarn lint:eslint && yarn lint:misc --check && yarn lint:dependencies --check && yarn lint:changelog && yarn lint:constraints",
     "lint:changelog": "auto-changelog validate",
     "lint:dependencies": "depcheck && yarn dedupe",
     "lint:eslint": "eslint . --cache --ext js,ts",
-    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write && yarn lint:dependencies && yarn lint:changelog",
+    "lint:fix": "yarn lint:eslint --fix && yarn lint:misc --write && yarn lint:dependencies && yarn lint:changelog && yarn lint:constraints --fix",
     "lint:misc": "prettier '**/*.json' '**/*.md' '!CHANGELOG.md' '**/*.yml' '!.yarnrc.yml' --ignore-path .gitignore --no-error-on-unmatched-pattern",
+    "lint:constraints": "yarn constraints",
     "prepack": "./scripts/prepack.sh",
     "test": "jest && jest-it-up",
     "test:watch": "jest --watch"
@@ -67,5 +68,9 @@
     "allowScripts": {
       "@lavamoat/preinstall-always-fail": false
     }
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/MetaMask/metamask-module-template/issues"
+  },
+  "homepage": "https://github.com/MetaMask/metamask-module-template#readme"
 }
