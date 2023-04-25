@@ -2,20 +2,6 @@
 % Utility predicates
 %===============================================================================
 
-% True if and only if WorkspaceBasename can unify with the part of the given
-% workspace directory name that results from removing all leading directories.
-workspace_basename(WorkspaceCwd, WorkspaceBasename) :-
-  atomic_list_concat(Parts, '/', WorkspaceCwd),
-  last(Parts, WorkspaceBasename).
-
-% True if and only if WorkspacePackageName can unify with the name of the
-% package which the workspace represents (which comes from the directory where
-% the package is located). Assumes that the package is not in a sub-workspace
-% and is not private.
-workspace_package_name(WorkspaceCwd, WorkspacePackageName) :-
-  workspace_basename(WorkspaceCwd, WorkspaceBasename),
-  atom_concat('@metamask/', WorkspaceBasename, WorkspacePackageName).
-
 % True if RepoName can be unified with the repository name part of RepoUrl, a
 % complete URL for a repository on GitHub. This URL must include the ".git"
 % extension.
