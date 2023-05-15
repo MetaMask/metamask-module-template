@@ -60,6 +60,7 @@ jobs:
           target-name: metamask-npm-publishers
         env:
           SKIP_PREPACK: true
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
   publish-npm:
     environment: npm-publish
