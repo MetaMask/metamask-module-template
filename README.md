@@ -17,7 +17,7 @@ Follow these instructions when using this template.
   - The links in the API section of the README
 - Update the pull request template (`.github/pull_request_template.md`) to remove the `Examples` section that is specific to this template.
 - Update the README "Usage" section, or remove it if it's not needed.
-- Update the CODEOWNERs file to set the appropriate code owners for the repository (typically one or more engineering teams)
+- Update the CODEOWNERS file to set the appropriate code owners for the repository (typically one or more engineering teams)
   - Ensure each referenced team has write permission, and that the engineering team still has write permission.
 - Delete these instructions.
 
