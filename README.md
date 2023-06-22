@@ -15,6 +15,9 @@ Follow these instructions when using this template.
 - Update the repository URL, referenced in the following places:
   - `repository` field of `package.json`
   - The links in the API section of the README
+- If your project has side effects, update the `sideEffects` field of
+  `package.json` to `true`, or an array of file globs that match the files that
+  have side effects.
 - Update the pull request template (`.github/pull_request_template.md`) to remove the `Examples` section that is specific to this template.
 - Update the README "Usage" section, or remove it if it's not needed.
 - Update the CODEOWNERS file to set the appropriate code owners for the repository (typically one or more engineering teams)
