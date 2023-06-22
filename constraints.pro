@@ -68,6 +68,9 @@ gen_enforced_field(WorkspaceCwd, 'license').
 % The entrypoint for the package must be `./dist/cjs/index.js`.
 gen_enforced_field(WorkspaceCwd, 'main', './dist/cjs/index.js').
 
+% The module entrypoint for the package must be `./dist/esm/index.js`.
+gen_enforced_field(WorkspaceCwd, 'module', './dist/esm/index.js').
+
 % The type definitions entrypoint the package must be `./dist/types/index.d.ts`.
 gen_enforced_field(WorkspaceCwd, 'types', './dist/types/index.d.ts').
 
