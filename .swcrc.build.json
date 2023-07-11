@@ -1,6 +1,4 @@
 {
-  // Note that this file is intentionally called `.swcrc.build.json`, so that if
-  // we use SWC for other things in the future, this file will not affect them.
   "$schema": "https://json.schemastore.org/swcrc",
   "jsc": {
     "parser": {
