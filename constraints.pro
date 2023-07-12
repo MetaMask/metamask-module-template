@@ -77,14 +77,7 @@ gen_enforced_field(WorkspaceCwd, 'exports["."].require', './dist/cjs/index.js').
 gen_enforced_field(WorkspaceCwd, 'module', './dist/esm/index.js').
 gen_enforced_field(WorkspaceCwd, 'exports["."].import', './dist/esm/index.js').
 
-% The package must be importable from subpaths.
-gen_enforced_field(WorkspaceCwd, 'exports["./dist/esm/*"].types', './dist/types/*.d.ts').
-gen_enforced_field(WorkspaceCwd, 'exports["./dist/esm/*"].require', null).
-gen_enforced_field(WorkspaceCwd, 'exports["./dist/esm/*"].import', './dist/esm/*.js').
-gen_enforced_field(WorkspaceCwd, 'exports["./dist/cjs/*"].types', './dist/types/*.d.ts').
-gen_enforced_field(WorkspaceCwd, 'exports["./dist/cjs/*"].require', './dist/cjs/*.js').
-gen_enforced_field(WorkspaceCwd, 'exports["./dist/cjs/*"].import', null).
-
+gen_enforced_field(WorkspaceCwd, 'exports["./package.json"]', './package.json').
 
 % The list of files included in the package must only include files generated
 % during the build step.
