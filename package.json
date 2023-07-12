@@ -17,14 +17,7 @@
       "require": "./dist/cjs/index.js",
       "types": "./dist/types/index.d.ts"
     },
-    "./dist/cjs/*": {
-      "require": "./dist/cjs/*.js",
-      "types": "./dist/types/*.d.ts"
-    },
-    "./dist/esm/*": {
-      "import": "./dist/esm/*.js",
-      "types": "./dist/types/*.d.ts"
-    }
+    "./package.json": "./package.json"
   },
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
