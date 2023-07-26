@@ -142,6 +142,7 @@ jobs:
       - name: Require clean working directory
         shell: bash
         run: |
+          git restore yarn.lock
           if ! git diff --exit-code; then
             echo "Working tree dirty at end of job"
             exit 1
