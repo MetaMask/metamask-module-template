@@ -90,7 +90,7 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, null, DependencyType) :-
   workspace_has_dependency(WorkspaceCwd, DependencyIdent, DependencyRange, DependencyType),
   DependencyType == 'devDependencies'.
 
-% The package must specify the expected node version contraint.
+% The package must specify the expected node version constraint.
 gen_enforced_field(WorkspaceCwd, 'engines.node', '^16.20 || ^18.16 || >=20').
 
 % The package is public.
