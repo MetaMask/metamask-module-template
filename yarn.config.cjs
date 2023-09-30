@@ -123,15 +123,29 @@ function expectWorkspaceDependencies(workspace) {
  *
  * @param {Workspace} workspace - The workspace to check.
  * @param {string} workspaceName - The name of the workspace.
+ * @returns {Promise<void>}
  */
 async function expectReadme(workspace, workspaceName) {
   const readme = await getWorkspaceFile(workspace, 'README.md');
-  if (workspaceName !== 'metamask-module-template') {
-    if (readme.includes('## Template Instructions')) {
-      workspace.error(
-        'The README.md contains template instructions. These should be removed.',
-      );
-    }
+  if (
+    workspaceName !== 'metamask-module-template' &&
+    readme.includes('## Template Instructions')
+  ) {
+    workspace.error(
+      'The README.md contains template instructions. These instructions should be removed.',
+    );
+  }
+
+  if (!readme.includes(`yarn add @metamask/${workspaceName}`)) {
+    workspace.error(
+      `The README.md does not contain an example of how to install the package using Yarn (\`yarn add @metamask/${workspaceName}\`). Please add an example.`,
+    );
+  }
+
+  if (!readme.includes(`npm install @metamask/${workspaceName}`)) {
+    workspace.error(
+      `The README.md does not contain an example of how to install the package using npm (\`npm install @metamask/${workspaceName}\`). Please add an example.`,
+    );
   }
 
   const nvmrc = await getWorkspaceFile(workspace, '.nvmrc');
@@ -141,6 +155,40 @@ async function expectReadme(workspace, workspaceName) {
   ) {
     workspace.error(
       `The README.md does not match the Node.js version specified in the .nvmrc file. Please update the README.md to include "version ${nodeVersion}".`,
+    );
+  }
+}
+
+/**
+ * Expect that the workspace has a pull_request_template.md file, and that it
+ * is a non-empty string. The pull_request_template.md is expected to:
+ *
+ * - Not contain an examples section (unless the workspace is the module
+ * template itself).
+ *
+ * @param {Workspace} workspace - The workspace to check.
+ * @param {string} workspaceName - The name of the workspace.
+ * @returns {Promise<void>}
+ */
+async function expectPullRequestTemplate(workspace, workspaceName) {
+  if (workspaceName === 'metamask-module-template') {
+    return;
+  }
+
+  const pullRequestTemplate = await getWorkspaceFile(
+    workspace,
+    '.github/PULL_REQUEST_TEMPLATE.md',
+  );
+
+  if (!pullRequestTemplate) {
+    workspace.error(
+      'The pull_request_template.md is missing. This should be added.',
+    );
+  }
+
+  if (pullRequestTemplate.includes('## Examples')) {
+    workspace.error(
+      'The pull_request_template.md contains an examples section. This section should be removed.',
     );
   }
 }
@@ -159,6 +207,9 @@ module.exports = defineConfig({
 
     // The package must have a valid README.md file.
     await expectReadme(workspace, workspaceName);
+
+    // The package must have a valid pull request template.
+    await expectPullRequestTemplate(workspace, workspaceName);
 
     expectWorkspaceDependencies(workspace);
 
