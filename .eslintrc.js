@@ -10,9 +10,15 @@ module.exports = {
     },
 
     {
-      files: ['*.js'],
+      files: ['*.js', '*.cjs'],
       parserOptions: {
         sourceType: 'script',
+        ecmaVersion: 2020,
+      },
+      settings: {
+        jsdoc: {
+          mode: 'typescript',
+        },
       },
       extends: ['@metamask/eslint-config-nodejs'],
     },
