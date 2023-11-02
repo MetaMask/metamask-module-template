@@ -73,7 +73,7 @@ gen_enforced_field(WorkspaceCwd, 'exports["."].types', './dist/types/index.d.ts'
 gen_enforced_field(WorkspaceCwd, 'main', './dist/index.js').
 gen_enforced_field(WorkspaceCwd, 'exports["."].require', './dist/index.js').
 
-% The module entrypoint for the package must be `./dist/esm/index.js`.
+% The module entrypoint for the package must be `./dist/index.mjs`.
 gen_enforced_field(WorkspaceCwd, 'module', './dist/index.mjs').
 gen_enforced_field(WorkspaceCwd, 'exports["."].import', './dist/index.mjs').
 
