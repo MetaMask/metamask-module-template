@@ -69,19 +69,19 @@ gen_enforced_field(WorkspaceCwd, 'license').
 gen_enforced_field(WorkspaceCwd, 'types', './dist/types/index.d.ts').
 gen_enforced_field(WorkspaceCwd, 'exports["."].types', './dist/types/index.d.ts').
 
-% The entrypoint for the package must be `./dist/cjs/index.js`.
-gen_enforced_field(WorkspaceCwd, 'main', './dist/cjs/index.js').
-gen_enforced_field(WorkspaceCwd, 'exports["."].require', './dist/cjs/index.js').
+% The entrypoint for the package must be `./dist/index.js`.
+gen_enforced_field(WorkspaceCwd, 'main', './dist/index.js').
+gen_enforced_field(WorkspaceCwd, 'exports["."].require', './dist/index.js').
 
-% The module entrypoint for the package must be `./dist/esm/index.js`.
-gen_enforced_field(WorkspaceCwd, 'module', './dist/esm/index.js').
-gen_enforced_field(WorkspaceCwd, 'exports["."].import', './dist/esm/index.js').
+% The module entrypoint for the package must be `./dist/index.mjs`.
+gen_enforced_field(WorkspaceCwd, 'module', './dist/index.mjs').
+gen_enforced_field(WorkspaceCwd, 'exports["."].import', './dist/index.mjs').
 
 gen_enforced_field(WorkspaceCwd, 'exports["./package.json"]', './package.json').
 
 % The list of files included in the package must only include files generated
 % during the build step.
-gen_enforced_field(WorkspaceCwd, 'files', ['dist/cjs/**', 'dist/esm/**', 'dist/types/**']).
+gen_enforced_field(WorkspaceCwd, 'files', ['dist']).
 
 % If a dependency is listed under "dependencies", it should not be listed under
 % "devDependencies".
@@ -90,7 +90,7 @@ gen_enforced_dependency(WorkspaceCwd, DependencyIdent, null, DependencyType) :-
   workspace_has_dependency(WorkspaceCwd, DependencyIdent, DependencyRange, DependencyType),
   DependencyType == 'devDependencies'.
 
-% The package must specify a minimum Node version of 16.
+% The package must specify the expected node version constraint.
 gen_enforced_field(WorkspaceCwd, 'engines.node', '^18.16 || >=20').
 
 % The package is public.
