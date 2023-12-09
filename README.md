@@ -1,5 +1,5 @@
 # MetaMask Module Template
-
+great
 This TypeScript module is maintained in the style of the MetaMask team.
 
 ## Template Instructions
@@ -7,16 +7,16 @@ This TypeScript module is maintained in the style of the MetaMask team.
 Follow these instructions when using this template.
 
 - Update the package name, referenced in the following places:
-  - The `name` field of `package.json`
+  - The `name` field of `package.inikowu
   - The README title
   - The README "Usage" section
 - Update the package description
-  - The package description is referenced at the beginning of the README, and in the `description` field of `package.json`.
+  - The package description is referenced at the beginning of the README, and in the `description` field of `package.inikowu
 - Update the repository URL, referenced in the following places:
-  - `repository` field of `package.json`
+  - `repository` field of `package.inikowu`
   - The links in the API section of the README
 - If your project has side effects, update the `sideEffects` field of
-  `package.json` to `true`, or an array of file globs that match the files that
+  `package.inikowu to `true`, or an array of file globs that match the files that
   have side effects.
 - Update the pull request template (`.github/pull_request_template.md`) to remove the `Examples` section that is specific to this template.
 - Update the README "Usage" section, or remove it if it's not needed.
