@@ -26,8 +26,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsup && yarn build:types",
-    "build:clean": "rimraf dist && yarn build",
+    "build": "tsup --clean && yarn build:types",
     "build:docs": "typedoc",
     "build:types": "tsc --project tsconfig.build.json",
     "lint": "yarn lint:eslint && yarn lint:constraints && yarn lint:misc --check && yarn lint:dependencies --check && yarn lint:changelog",
