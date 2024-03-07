@@ -192,13 +192,13 @@ async function expectPullRequestTemplate(workspace, workspaceName) {
  * This is required for proper TypeScript support when using `Node16` (or later)
  * module resolution.
  *
- * @param workspace - The workspace to check.
+ * @param {Workspace} workspace - The workspace to check.
  * @returns {void}
  */
 function expectExports(workspace) {
-  const exports = workspace.manifest.exports;
-  Object.entries(exports)
-    .filter(([,exportValue]) => typeof exportValue !== 'string')
+  const { exports: manifestExports } = workspace.manifest;
+  Object.entries(manifestExports)
+    .filter(([, exportValue]) => typeof exportValue !== 'string')
     .forEach(([exportName, exportObject]) => {
       const keys = Object.keys(exportObject);
       if (keys.includes('types') && keys[0] !== 'types') {
@@ -206,7 +206,7 @@ function expectExports(workspace) {
           `The "types" export must be the first export in the "exports" field for the export "${exportName}".`,
         );
       }
-  });
+    });
 }
 
 module.exports = defineConfig({

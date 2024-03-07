@@ -13,6 +13,14 @@ module.exports = {
       files: ['*.js', '*.cjs'],
       parserOptions: {
         sourceType: 'script',
+      },
+      extends: ['@metamask/eslint-config-nodejs'],
+    },
+
+    {
+      files: ['yarn.config.cjs'],
+      parserOptions: {
+        sourceType: 'script',
         ecmaVersion: 2020,
       },
       settings: {
