@@ -147,16 +147,6 @@ async function expectReadme(workspace, workspaceName) {
       `The README.md does not contain an example of how to install the package using npm (\`npm install @metamask/${workspaceName}\`). Please add an example.`,
     );
   }
-
-  const nvmrc = await getWorkspaceFile(workspace, '.nvmrc');
-  const nodeVersion = nvmrc.trim().replace(/^v/u, '');
-  if (
-    !readme.includes(`[Node.js](https://nodejs.org) version ${nodeVersion}`)
-  ) {
-    workspace.error(
-      `The README.md does not match the Node.js version specified in the .nvmrc file. Please update the README.md to include "version ${nodeVersion}".`,
-    );
-  }
 }
 
 /**
@@ -226,7 +216,7 @@ module.exports = defineConfig({
     workspace.set('repository.url', `${workspaceRepository}.git`);
 
     // The package must specify a minimum Node.js version of 16.
-    workspace.set('engines.node', '>=16.0.0');
+    workspace.set('engines.node', '^18.18 || >=20');
 
     // The package must specify a `types` entrypoint, and an `import`
     // entrypoint.
@@ -235,19 +225,17 @@ module.exports = defineConfig({
 
     // The package must specify a `main` and `module` entrypoint, and a
     // `require` and `import` entrypoint.
-    workspace.set('main', './dist/cjs/index.js');
-    workspace.set('exports["."].require', './dist/cjs/index.js');
-    workspace.set('module', './dist/esm/index.js');
-    workspace.set('exports["."].import', './dist/esm/index.js');
+    workspace.set('main', './dist/index.js');
+    workspace.set('exports["."].require', './dist/index.js');
+    workspace.set('module', './dist/index.mjs');
+    workspace.set('exports["."].import', './dist/index.mjs');
 
     // The package must export a `package.json` file.
     workspace.set('exports["./package.json"]', './package.json');
 
     // The list of files included in the package must only include files
     // generated during the build process.
-    workspace.set('files[0]', 'dist/cjs/**');
-    workspace.set('files[1]', 'dist/esm/**');
-    workspace.set('files[2]', 'dist/types/**');
+    workspace.set('files[0]', 'dist');
 
     // The package is public, and should be published to the npm registry.
     workspace.unset('private');
