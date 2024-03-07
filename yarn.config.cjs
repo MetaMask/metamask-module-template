@@ -183,6 +183,32 @@ async function expectPullRequestTemplate(workspace, workspaceName) {
   }
 }
 
+/**
+ * Expect that the workspace has a valid `exports` field. The `exports` field
+ * is expected to:
+ *
+ * - Export a `types` entrypoint as the first export, or not at all.
+ *
+ * This is required for proper TypeScript support when using `Node16` (or later)
+ * module resolution.
+ *
+ * @param workspace - The workspace to check.
+ * @returns {void}
+ */
+function expectExports(workspace) {
+  const exports = workspace.manifest.exports;
+  Object.entries(exports)
+    .filter(([,exportValue]) => typeof exportValue !== 'string')
+    .forEach(([exportName, exportObject]) => {
+      const keys = Object.keys(exportObject);
+      if (keys.includes('types') && keys[0] !== 'types') {
+        workspace.error(
+          `The "types" export must be the first export in the "exports" field for the export "${exportName}".`,
+        );
+      }
+  });
+}
+
 module.exports = defineConfig({
   async constraints({ Yarn }) {
     const workspace = Yarn.workspace();
@@ -232,6 +258,8 @@ module.exports = defineConfig({
 
     // The package must export a `package.json` file.
     workspace.set('exports["./package.json"]', './package.json');
+
+    expectExports(workspace);
 
     // The list of files included in the package must only include files
     // generated during the build process.
