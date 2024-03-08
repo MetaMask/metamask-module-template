@@ -18,6 +18,18 @@ const { basename, resolve } = require('path');
 const BASE_URL = 'https://github.com/MetaMask/';
 
 /**
+ * Get the name of the workspace. The workspace name is expected to be in the
+ * form `@metamask/workspace-name`, and this function will extract
+ * `workspace-name`.
+ *
+ * @param {Workspace} workspace - The workspace.
+ * @return {string} The name of the workspace.
+ */
+function getWorkspaceName(workspace) {
+  return basename(workspace.ident);
+}
+
+/**
  * Get the absolute path to a file within the workspace.
  *
  * @param {Workspace} workspace - The workspace.
@@ -212,7 +224,7 @@ function expectExports(workspace) {
 module.exports = defineConfig({
   async constraints({ Yarn }) {
     const workspace = Yarn.workspace();
-    const workspaceName = basename(__dirname);
+    const workspaceName = getWorkspaceName(workspace);
     const workspaceRepository = `${BASE_URL}${workspaceName}`;
 
     // The package must have a name, version, description, and license.
