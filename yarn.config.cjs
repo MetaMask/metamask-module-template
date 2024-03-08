@@ -23,7 +23,7 @@ const BASE_URL = 'https://github.com/MetaMask/';
  * `workspace-name`.
  *
  * @param {Workspace} workspace - The workspace.
- * @return {string} The name of the workspace.
+ * @returns {string} The name of the workspace.
  */
 function getWorkspaceName(workspace) {
   return basename(workspace.ident);
