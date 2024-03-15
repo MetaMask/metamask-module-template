@@ -1,5 +1,5 @@
 {
-  "name": "@metamask/module-template",
+  "name": "@metamask/metamask-module-template",
   "version": "0.0.0",
   "description": "The MetaMask Node module template",
   "homepage": "https://github.com/MetaMask/metamask-module-template#readme",
@@ -13,9 +13,9 @@
   "sideEffects": false,
   "exports": {
     ".": {
+      "types": "./dist/types/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./dist/index.js",
-      "types": "./dist/types/index.d.ts"
+      "require": "./dist/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -33,7 +33,7 @@
     "lint:changelog": "auto-changelog validate --prettier",
     "lint:constraints": "yarn constraints",
     "lint:dependencies": "depcheck && yarn dedupe",
-    "lint:eslint": "eslint . --cache --ext js,ts",
+    "lint:eslint": "eslint . --cache --ext js,cjs,ts",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:constraints --fix && yarn lint:misc --write && yarn lint:dependencies && yarn lint:changelog",
     "lint:misc": "prettier '**/*.json' '**/*.md' '**/*.yml' '!.yarnrc.yml' --ignore-path .gitignore --no-error-on-unmatched-pattern",
     "prepack": "./scripts/prepack.sh",
@@ -52,6 +52,7 @@
     "@types/node": "^16",
     "@typescript-eslint/eslint-plugin": "^5.43.0",
     "@typescript-eslint/parser": "^5.43.0",
+    "@yarnpkg/types": "^4.0.0-rc.52",
     "depcheck": "^1.4.3",
     "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
@@ -71,7 +72,7 @@
     "typedoc": "^0.23.15",
     "typescript": "~4.8.4"
   },
-  "packageManager": "yarn@3.2.1",
+  "packageManager": "yarn@4.1.1",
   "engines": {
     "node": "^18.18 || >=20"
   },

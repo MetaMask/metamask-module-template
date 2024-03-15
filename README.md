@@ -26,11 +26,11 @@ Follow these instructions when using this template.
 
 ## Installation
 
-`yarn add @metamask/this-module`
+`yarn add @metamask/metamask-module-template`
 
 or
 
-`npm install @metamask/this-module`
+`npm install @metamask/metamask-module-template`
 
 ## Usage
 
