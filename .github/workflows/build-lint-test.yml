@@ -8,14 +8,18 @@ jobs:
     name: Prepare
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: '.nvmrc'
-          cache: 'yarn'
+          node-version: 'lts/*'
       - name: Install Yarn
         run: corepack enable
+      - uses: actions/checkout@v4
+      - name: Use Node.js and install dependencies
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'yarn'
       - name: Install Yarn dependencies
         run: yarn --immutable
 
@@ -25,11 +29,17 @@ jobs:
     needs:
       - prepare
     steps:
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+      - name: Install Yarn
+        run: corepack enable
       - uses: actions/checkout@v4
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: '.nvmrc'
+          node-version: 'lts/*'
           cache: 'yarn'
       - run: yarn --immutable --immutable-cache
       - run: yarn build
@@ -47,11 +57,17 @@ jobs:
     needs:
       - prepare
     steps:
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+      - name: Install Yarn
+        run: corepack enable
       - uses: actions/checkout@v4
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
-          node-version-file: '.nvmrc'
+          node-version: 'lts/*'
           cache: 'yarn'
       - run: yarn --immutable --immutable-cache
       - run: yarn lint
@@ -78,6 +94,12 @@ jobs:
       matrix:
         node-version: [18.x, 20.x]
     steps:
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Yarn
+        run: corepack enable
       - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
@@ -103,6 +125,12 @@ jobs:
       matrix:
         node-version: [18.x, 20.x]
     steps:
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Yarn
+        run: corepack enable
       - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v4
