@@ -253,20 +253,21 @@ module.exports = defineConfig({
     workspace.set('repository.type', 'git');
     workspace.set('repository.url', `${workspaceRepository}.git`);
 
-    // The package must specify a minimum Node.js version of 16.
+    // The package must specify a minimum Node.js version of 18.18.
     workspace.set('engines.node', '^18.18 || >=20');
 
-    // The package must specify a `types` entrypoint, and an `import`
-    // entrypoint.
-    workspace.set('types', './dist/types/index.d.ts');
-    workspace.set('exports["."].types', './dist/types/index.d.ts');
+    // The package must provide the location of the CommonJS-compatible
+    // entrypoint and its matching type declaration file.
+    workspace.set('main', './dist/index.cjs');
+    workspace.set('exports["."].require.default', './dist/index.cjs');
+    workspace.set('types', './dist/index.d.cts');
+    workspace.set('exports["."].require.types', './dist/index.d.cts');
 
-    // The package must specify a `main` and `module` entrypoint, and a
-    // `require` and `import` entrypoint.
-    workspace.set('main', './dist/index.js');
-    workspace.set('exports["."].require', './dist/index.js');
+    // The package must provide the location of the ESM-compatible JavaScript
+    // entrypoint and its matching type declaration file.
     workspace.set('module', './dist/index.mjs');
-    workspace.set('exports["."].import', './dist/index.mjs');
+    workspace.set('exports["."].import.default', './dist/index.mjs');
+    workspace.set('exports["."].import.types', './dist/index.d.mts');
 
     // The package must export a `package.json` file.
     workspace.set('exports["./package.json"]', './package.json');
