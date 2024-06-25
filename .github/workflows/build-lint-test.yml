@@ -7,41 +7,47 @@ jobs:
   prepare:
     name: Prepare
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
     steps:
-      - name: Use Node.js
+      - uses: actions/checkout@v4
+      - name: Install Corepack via Node
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version-file: '.nvmrc'
       - name: Install Yarn
         run: corepack enable
-      - uses: actions/checkout@v4
-      - name: Use Node.js and install dependencies
+      - name: Install Node.js ${{ matrix.node-version }} and restore Yarn cache
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: ${{ matrix.node-version }}
           cache: 'yarn'
-      - name: Install Yarn dependencies
+      - name: Install dependencies via Yarn
         run: yarn --immutable
 
   build:
     name: Build
+    needs: prepare
     runs-on: ubuntu-latest
-    needs:
-      - prepare
+    strategy:
+      matrix:
+        node-version: [20.x]
     steps:
-      - name: Use Node.js
+      - uses: actions/checkout@v4
+      - name: Install Corepack via Node
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version-file: '.nvmrc'
       - name: Install Yarn
         run: corepack enable
-      - uses: actions/checkout@v4
-      - name: Use Node.js
+      - name: Install Node.js ${{ matrix.node-version }} and restore Yarn cache
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: ${{ matrix.node-version }}
           cache: 'yarn'
-      - run: yarn --immutable --immutable-cache
+      - name: Install dependencies via Yarn
+        run: yarn --immutable --immutable-cache
       - run: yarn build
       - name: Require clean working directory
         shell: bash
@@ -53,23 +59,26 @@ jobs:
 
   lint:
     name: Lint
+    needs: prepare
     runs-on: ubuntu-latest
-    needs:
-      - prepare
+    strategy:
+      matrix:
+        node-version: [20.x]
     steps:
-      - name: Use Node.js
+      - uses: actions/checkout@v4
+      - name: Install Corepack via Node
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version-file: '.nvmrc'
       - name: Install Yarn
         run: corepack enable
-      - uses: actions/checkout@v4
-      - name: Use Node.js
+      - name: Install Node.js ${{ matrix.node-version }} and restore Yarn cache
         uses: actions/setup-node@v4
         with:
-          node-version: 'lts/*'
+          node-version: ${{ matrix.node-version }}
           cache: 'yarn'
-      - run: yarn --immutable --immutable-cache
+      - name: Install dependencies via Yarn
+        run: yarn --immutable --immutable-cache
       - run: yarn lint
       - name: Validate RC changelog
         if: ${{ startsWith(github.head_ref, 'release/') }}
@@ -87,26 +96,26 @@ jobs:
 
   test:
     name: Test
+    needs: prepare
     runs-on: ubuntu-latest
-    needs:
-      - prepare
     strategy:
       matrix:
         node-version: [18.x, 20.x]
     steps:
-      - name: Use Node.js
+      - uses: actions/checkout@v4
+      - name: Install Corepack via Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: '.nvmrc'
       - name: Install Yarn
         run: corepack enable
-      - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Install Node.js ${{ matrix.node-version }} and restore Yarn cache
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
-      - run: yarn --immutable --immutable-cache
+      - name: Install dependencies via Yarn
+        run: yarn --immutable --immutable-cache
       - run: yarn test
       - name: Require clean working directory
         shell: bash
@@ -118,31 +127,32 @@ jobs:
 
   compatibility-test:
     name: Compatibility test
+    needs: prepare
     runs-on: ubuntu-latest
-    needs:
-      - prepare
     strategy:
       matrix:
         node-version: [18.x, 20.x]
     steps:
-      - name: Use Node.js
+      - uses: actions/checkout@v4
+      - name: Install Corepack via Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version-file: '.nvmrc'
       - name: Install Yarn
         run: corepack enable
-      - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Install Node.js ${{ matrix.node-version }} and restore Yarn cache
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
-      - run: rm yarn.lock && YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn
+      - name: Install dependencies via Yarn
+        run: rm yarn.lock && YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn
       - run: yarn test
+      - name: Restore lockfile
+        run: git restore yarn.lock
       - name: Require clean working directory
         shell: bash
         run: |
-          git restore yarn.lock
           if ! git diff --exit-code; then
             echo "Working tree dirty at end of job"
             exit 1
