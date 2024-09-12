@@ -1014,7 +1014,7 @@ __metadata:
     "@metamask/eslint-config-jest": "npm:^12.1.0"
     "@metamask/eslint-config-nodejs": "npm:^12.1.0"
     "@metamask/eslint-config-typescript": "npm:^12.1.0"
-    "@ts-bridge/cli": "npm:^0.5.0"
+    "@ts-bridge/cli": "npm:^0.5.1"
     "@types/jest": "npm:^28.1.6"
     "@types/node": "npm:^18.18"
     "@typescript-eslint/eslint-plugin": "npm:^5.43.0"
@@ -1215,9 +1215,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@ts-bridge/cli@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@ts-bridge/cli@npm:0.5.0"
+"@ts-bridge/cli@npm:^0.5.1":
+  version: 0.5.1
+  resolution: "@ts-bridge/cli@npm:0.5.1"
   dependencies:
     "@ts-bridge/resolver": "npm:^0.1.2"
     chalk: "npm:^5.3.0"
@@ -1228,7 +1228,7 @@ __metadata:
   bin:
     ts-bridge: ./dist/index.js
     tsbridge: ./dist/index.js
-  checksum: 10/3e80a2335ed1d9d0062bfc74949a9ea3516c06745e586d8aa54eab305b19e6e1dc3c2aa36dee6dc86ab95a46d287c5ddb3bc41eb1e88f98af258ca5b13ee366d
+  checksum: 10/691abe737617597c6ec0a296a67eedf47fc93cc2682658970326ad8f5c63376f987ee92502191ed3e81e917515d101bab7ca83f06b3b489449c3b674356cc306
   languageName: node
   linkType: hard
 
