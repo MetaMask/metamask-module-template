@@ -179,7 +179,7 @@ async function expectPullRequestTemplate(workspace, workspaceName) {
 
   const pullRequestTemplate = await getWorkspaceFile(
     workspace,
-    '.github/PULL_REQUEST_TEMPLATE.md',
+    '.github/pull_request_template.md',
   );
 
   if (!pullRequestTemplate) {
@@ -253,8 +253,8 @@ module.exports = defineConfig({
     workspace.set('repository.type', 'git');
     workspace.set('repository.url', `${workspaceRepository}.git`);
 
-    // The package must specify a minimum Node.js version of 18.18.
-    workspace.set('engines.node', '^18.18 || >=20');
+    // The package must specify the expected minimum Node versions
+    workspace.set('engines.node', '^18.20 || ^20.17 || >=22');
 
     // The package must provide the location of the CommonJS-compatible
     // entrypoint and its matching type declaration file.
