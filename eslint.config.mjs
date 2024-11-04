@@ -5,7 +5,7 @@ import typescript from '@metamask/eslint-config-typescript';
 
 const config = createConfig([
   {
-    ignores: ['!.eslintrc.js', '!.prettierrc.js', 'dist/', 'docs/', '.yarn/'],
+    ignores: ['dist/', 'docs/', '.yarn/'],
   },
 
   {
