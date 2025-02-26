@@ -6,6 +6,8 @@
     "@metamask/eslint-config",
     "@metamask/eslint-config-*",
     "@types/*",
+    "@vitest/coverage-istanbul",
+    "@vitest/eslint-plugin",
     "@yarnpkg/types",
     "eslint-config-*",
     "eslint-import-resolver-typescript",
@@ -13,6 +15,7 @@
     "prettier-plugin-packagejson",
     "ts-node",
     "typedoc",
-    "typescript-eslint"
+    "typescript-eslint",
+    "vite"
   ]
 }
