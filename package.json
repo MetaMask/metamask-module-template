@@ -55,6 +55,7 @@
     "@metamask/eslint-config-vitest": "^1.0.0",
     "@ts-bridge/cli": "^0.6.3",
     "@types/node": "^18.18",
+    "@typescript-eslint/utils": "^8.6.0",
     "@vitest/coverage-istanbul": "^3.0.7",
     "@vitest/eslint-plugin": "^1.1.4",
     "@yarnpkg/types": "^4.0.0-rc.52",
