@@ -6,6 +6,7 @@
     "@metamask/eslint-config",
     "@metamask/eslint-config-*",
     "@types/*",
+    "@typescript-eslint/utils",
     "@vitest/coverage-istanbul",
     "@vitest/eslint-plugin",
     "@yarnpkg/types",
