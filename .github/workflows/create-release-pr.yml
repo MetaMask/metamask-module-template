@@ -21,7 +21,8 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - uses: MetaMask/action-checkout-and-setup@v1
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: true
 

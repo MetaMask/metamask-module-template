@@ -10,7 +10,8 @@ jobs:
     name: Check workflows
     runs-on: ubuntu-latest
     steps:
-      - uses: MetaMask/action-checkout-and-setup@v1
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
       - name: Download actionlint
