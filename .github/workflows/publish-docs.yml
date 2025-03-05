@@ -21,7 +21,7 @@ jobs:
       - name: Ensure `destination_dir` is not empty
         if: ${{ inputs.destination_dir == '' }}
         run: exit 1
-      - uses: MetaMask/action-checkout-and-setup@main
+      - uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: true
       - name: Run build script

@@ -15,7 +15,7 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: MetaMask/action-checkout-and-setup@main
+      - uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
@@ -38,7 +38,7 @@ jobs:
     needs: publish-release
     runs-on: ubuntu-latest
     steps:
-      - uses: MetaMask/action-checkout-and-setup@main
+      - uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
@@ -60,7 +60,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: npm-publish
     steps:
-      - uses: MetaMask/action-checkout-and-setup@main
+      - uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
