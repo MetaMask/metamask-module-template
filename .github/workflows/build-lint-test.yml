@@ -14,6 +14,7 @@ jobs:
       - uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          node-version: ${{ matrix.node-version }}
           cache-node-modules: ${{ matrix.node-version == '22.x' }}
 
   build:
@@ -27,6 +28,7 @@ jobs:
       - uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          node-version: ${{ matrix.node-version }}
       - run: yarn build
       - name: Require clean working directory
         shell: bash
@@ -47,6 +49,7 @@ jobs:
       - uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          node-version: ${{ matrix.node-version }}
       - run: yarn lint
       - name: Validate RC changelog
         if: ${{ startsWith(github.head_ref, 'release/') }}
@@ -73,6 +76,7 @@ jobs:
       - uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          node-version: ${{ matrix.node-version }}
       - run: yarn test
       - name: Require clean working directory
         shell: bash
@@ -93,6 +97,7 @@ jobs:
       - uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
+          node-version: ${{ matrix.node-version }}
       - name: Install dependencies via Yarn
         run: rm yarn.lock && YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn
       - run: yarn test
