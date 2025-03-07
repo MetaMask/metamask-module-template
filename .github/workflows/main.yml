@@ -43,6 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - check-workflows
+      - analyse-code
       - build-lint-test
     outputs:
       PASSED: ${{ steps.set-output.outputs.PASSED }}
