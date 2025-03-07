@@ -1,6 +1,8 @@
+import { describe, it, expect } from 'vitest';
+
 import greeter from '.';
 
-describe('Test', () => {
+describe('greeter', () => {
   it('greets', () => {
     const name = 'Huey';
     const result = greeter(name);
