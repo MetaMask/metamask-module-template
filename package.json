@@ -88,6 +88,7 @@
   "lavamoat": {
     "allowScripts": {
       "@lavamoat/preinstall-always-fail": false,
+      "eslint-plugin-import-x>unrs-resolver": false,
       "vite>esbuild": false
     }
   }
