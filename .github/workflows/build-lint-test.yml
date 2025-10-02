@@ -9,7 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.0.0, 22.0.0, 24.x]
+        node-version:
+          - '20.0.0'
+          - '22.0.0'
+          - '24.x'
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -24,7 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [24.x]
+        node-version:
+          - '24.x'
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -46,7 +50,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [24.x]
+        node-version:
+          - '24.x'
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -74,7 +79,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.0, 22.0, 24.x]
+        node-version:
+          - '20.0.0'
+          - '22.0.0'
+          - '24.x'
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -96,7 +104,10 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [20.0, 22.0, 24.x]
+        node-version:
+          - '20.0.0'
+          - '22.0.0'
+          - '24.x'
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
