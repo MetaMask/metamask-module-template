@@ -80,7 +80,7 @@
   },
   "packageManager": "yarn@4.1.1",
   "engines": {
-    "node": "^18.20 || ^20.17 || >=22"
+    "node": "^20 || ^22 || >=24"
   },
   "publishConfig": {
     "access": "public",
