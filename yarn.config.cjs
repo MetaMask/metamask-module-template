@@ -254,7 +254,7 @@ module.exports = defineConfig({
     workspace.set('repository.url', `${workspaceRepository}.git`);
 
     // The package must specify the expected minimum Node versions
-    workspace.set('engines.node', '^18.20 || ^20.17 || >=22');
+    workspace.set('engines.node', '^20 || ^22 || >=24');
 
     // The package must provide the location of the CommonJS-compatible
     // entrypoint and its matching type declaration file.
