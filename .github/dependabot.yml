@@ -23,5 +23,4 @@ updates:
       - dependency-name: 'MetaMask/*'
       - dependency-name: 'actions/*'
     target-branch: 'main'
-    versioning-strategy: 'increase-if-necessary'
     open-pull-requests-limit: 10
