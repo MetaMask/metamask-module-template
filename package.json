@@ -52,7 +52,7 @@
     "@metamask/auto-changelog": "^4.0.0",
     "@metamask/eslint-config": "^14.0.0",
     "@metamask/eslint-config-nodejs": "^14.0.0",
-    "@metamask/eslint-config-typescript": "^14.0.0",
+    "@metamask/eslint-config-typescript": "^15.0.0",
     "@metamask/eslint-config-vitest": "^1.0.0",
     "@ts-bridge/cli": "^0.6.3",
     "@types/node": "^18.18",
