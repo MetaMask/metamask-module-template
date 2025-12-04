@@ -748,17 +748,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eslint-config-vitest@npm:^1.0.0":
-  version: 1.0.0
-  resolution: "@metamask/eslint-config-vitest@npm:1.0.0"
+"@metamask/eslint-config-vitest@npm:^15.0.0":
+  version: 15.0.0
+  resolution: "@metamask/eslint-config-vitest@npm:15.0.0"
   dependencies:
     "@eslint/js": "npm:^9.11.0"
     globals: "npm:^15.9.0"
   peerDependencies:
-    "@metamask/eslint-config": ^14.0.0
+    "@metamask/eslint-config": ^15.0.0
     "@vitest/eslint-plugin": ^1.1.4
     eslint: ^9.11.0
-  checksum: 10/7d8e80e0fb5ff893cd1b369e6aa4c722b7863db2078997d93b7633cfe9d66c870ce0f9ce762b876effc9f0cf20ac81b6268f659ebf8bf20544c1d03600cfec0d
+  checksum: 10/44be0a6e6c97ed090421f931817049edacbae97f64c21e4eda76abd17b930b9c984bb34b29a5b13eee3f3ac5456a64fe1744c883cc18403ac05e66c6907804ee
   languageName: node
   linkType: hard
 
@@ -791,7 +791,7 @@ __metadata:
     "@metamask/eslint-config": "npm:^14.0.0"
     "@metamask/eslint-config-nodejs": "npm:^14.0.0"
     "@metamask/eslint-config-typescript": "npm:^14.0.0"
-    "@metamask/eslint-config-vitest": "npm:^1.0.0"
+    "@metamask/eslint-config-vitest": "npm:^15.0.0"
     "@ts-bridge/cli": "npm:^0.6.3"
     "@types/node": "npm:^18.18"
     "@typescript-eslint/utils": "npm:^8.6.0"
