@@ -15,7 +15,6 @@ const config = createConfig([
       sourceType: 'module',
       parserOptions: {
         tsconfigRootDir: import.meta.dirname,
-        project: ['./tsconfig.json'],
       },
     },
 

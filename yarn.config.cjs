@@ -6,6 +6,7 @@ const { basename, resolve } = require('path');
 /**
  * Aliases for the Yarn type definitions, to make the code more readable.
  *
+ * @typedef {import('@yarnpkg/types').Yarn.Constraints.Yarn} Yarn
  * @typedef {import('@yarnpkg/types').Yarn.Constraints.Workspace} Workspace
  * @typedef {import('@yarnpkg/types').Yarn.Constraints.Dependency} Dependency
  */
@@ -222,6 +223,12 @@ function expectExports(workspace) {
 }
 
 module.exports = defineConfig({
+  /**
+   * Define the constraints for this project.
+   *
+   * @param {object} args - The arguments.
+   * @param {Yarn} args.Yarn - The Yarn "global".
+   */
   async constraints({ Yarn }) {
     const workspace = Yarn.workspace();
     const workspaceName = getWorkspaceName(workspace);
