@@ -49,7 +49,7 @@
     "@arethetypeswrong/cli": "^0.15.3",
     "@lavamoat/allow-scripts": "^3.0.4",
     "@lavamoat/preinstall-always-fail": "^2.0.0",
-    "@metamask/auto-changelog": "^4.0.0",
+    "@metamask/auto-changelog": "^5.3.0",
     "@metamask/eslint-config": "^15.0.0",
     "@metamask/eslint-config-nodejs": "^15.0.0",
     "@metamask/eslint-config-typescript": "^15.0.0",
@@ -75,7 +75,7 @@
     "typedoc": "^0.26.11",
     "typescript": "~5.7.3",
     "typescript-eslint": "^8.48.1",
-    "vite": "^6.2.0",
+    "vite": "^6.4.1",
     "vitest": "^3.0.7"
   },
   "packageManager": "yarn@4.10.3",
