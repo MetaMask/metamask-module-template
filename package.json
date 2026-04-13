@@ -57,7 +57,7 @@
     "@ts-bridge/cli": "^0.6.3",
     "@types/node": "^18.18",
     "@typescript-eslint/utils": "^8.6.0",
-    "@vitest/coverage-istanbul": "^3.0.7",
+    "@vitest/coverage-istanbul": "^4.1.4",
     "@vitest/eslint-plugin": "^1.1.4",
     "@yarnpkg/types": "^4.0.0-rc.52",
     "depcheck": "^1.4.3",
@@ -75,8 +75,8 @@
     "typedoc": "^0.26.11",
     "typescript": "~5.7.3",
     "typescript-eslint": "^8.48.1",
-    "vite": "^6.4.1",
-    "vitest": "^3.0.7"
+    "vite": "^8.0.8",
+    "vitest": "^4.1.4"
   },
   "packageManager": "yarn@4.10.3",
   "engines": {
