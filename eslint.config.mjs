@@ -24,6 +24,14 @@ const config = createConfig([
   },
 
   {
+    rules: {
+      // Handled by Oxfmt.
+      'prettier/prettier': 'off',
+      'import-x/order': 'off',
+    },
+  },
+
+  {
     files: ['**/*.ts'],
     extends: typescript,
   },
