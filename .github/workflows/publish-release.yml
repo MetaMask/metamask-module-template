@@ -10,9 +10,8 @@ on:
       PUBLISH_DOCS_TOKEN:
         required: true
 jobs:
-  publish-release:
-    permissions:
-      contents: write
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
@@ -20,10 +19,8 @@ jobs:
         with:
           is-high-risk-environment: true
           ref: ${{ github.sha }}
-      - uses: MetaMask/action-publish-release@v3
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: yarn build
+      - name: Build
+        run: yarn build
       - name: Upload build artifacts
         uses: actions/upload-artifact@v7
         with:
@@ -35,7 +32,8 @@ jobs:
             ./node_modules/.yarn-state.yml
 
   publish-npm-dry-run:
-    needs: publish-release
+    name: Publish to NPM (dry run)
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout and setup environment
@@ -57,6 +55,7 @@ jobs:
           SKIP_PREPACK: true
 
   publish-npm:
+    name: Publish to NPM
     needs: publish-npm-dry-run
     runs-on: ubuntu-latest
     environment: npm-publish
@@ -80,6 +79,7 @@ jobs:
           SKIP_PREPACK: true
 
   get-release-version:
+    name: Get release version
     needs: publish-npm
     runs-on: ubuntu-latest
     outputs:
@@ -113,3 +113,19 @@ jobs:
       destination_dir: latest
     secrets:
       PUBLISH_DOCS_TOKEN: ${{ secrets.PUBLISH_DOCS_TOKEN }}
+
+  publish-release:
+    name: Publish to GitHub
+    needs: publish-npm
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
+        with:
+          is-high-risk-environment: true
+          ref: ${{ github.sha }}
+      - uses: MetaMask/action-publish-release@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
