@@ -36,9 +36,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
+          is-high-risk-environment: true
           ref: ${{ github.sha }}
       - name: Restore build artifacts
         uses: actions/download-artifact@v8
@@ -59,9 +60,10 @@ jobs:
     runs-on: ubuntu-latest
     environment: npm-publish
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
+          is-high-risk-environment: true
           ref: ${{ github.sha }}
       - name: Restore build artifacts
         uses: actions/download-artifact@v8
@@ -113,7 +115,7 @@ jobs:
       PUBLISH_DOCS_TOKEN: ${{ secrets.PUBLISH_DOCS_TOKEN }}
 
   publish-release:
-    name: Publish release to GitHub
+    name: Publish to GitHub
     needs: publish-npm
     permissions:
       contents: write
