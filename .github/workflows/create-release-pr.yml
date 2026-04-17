@@ -4,15 +4,15 @@ on:
   workflow_dispatch:
     inputs:
       base-branch:
-        description: "The base branch for git operations and the pull request."
-        default: "main"
+        description: 'The base branch for git operations and the pull request.'
+        default: 'main'
         required: true
       release-type:
         description: 'A SemVer version diff, i.e. major, minor, or patch. Mutually exclusive with "release-version".'
         required: false
         type: choice
         options:
-          - ""
+          - ''
           - major
           - minor
           - patch
