@@ -13,7 +13,6 @@
     "eslint-config-*",
     "eslint-import-resolver-typescript",
     "eslint-plugin-*",
-    "prettier",
     "ts-node",
     "typedoc",
     "typescript-eslint",
