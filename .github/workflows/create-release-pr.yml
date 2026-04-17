@@ -34,9 +34,10 @@ jobs:
           # branch for all git operations and the release PR.
           ref: ${{ github.event.inputs.base-branch }}
 
-      - uses: MetaMask/action-create-release-pr@v4
+      - uses: MetaMask/action-create-release-pr@v5
         with:
           release-type: ${{ github.event.inputs.release-type }}
           release-version: ${{ github.event.inputs.release-version }}
+          formatter: 'oxfmt'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
