@@ -10,6 +10,11 @@ on:
       release-type:
         description: 'A SemVer version diff, i.e. major, minor, or patch. Mutually exclusive with "release-version".'
         required: false
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
       release-version:
         description: 'A specific version to bump to. Mutually exclusive with "release-type".'
         required: false
@@ -34,9 +39,10 @@ jobs:
           # branch for all git operations and the release PR.
           ref: ${{ github.event.inputs.base-branch }}
 
-      - uses: MetaMask/action-create-release-pr@v4
+      - uses: MetaMask/action-create-release-pr@v5
         with:
           release-type: ${{ github.event.inputs.release-type }}
           release-version: ${{ github.event.inputs.release-version }}
+          formatter: 'oxfmt'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
