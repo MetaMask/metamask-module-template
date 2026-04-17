@@ -4,12 +4,18 @@ on:
   workflow_dispatch:
     inputs:
       base-branch:
-        description: 'The base branch for git operations and the pull request.'
-        default: 'main'
+        description: "The base branch for git operations and the pull request."
+        default: "main"
         required: true
       release-type:
         description: 'A SemVer version diff, i.e. major, minor, or patch. Mutually exclusive with "release-version".'
         required: false
+        type: choice
+        options:
+          - ""
+          - major
+          - minor
+          - patch
       release-version:
         description: 'A specific version to bump to. Mutually exclusive with "release-type".'
         required: false
@@ -22,7 +28,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Checkout and setup environment
-        uses: MetaMask/action-checkout-and-setup@v2
+        uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: true
 
