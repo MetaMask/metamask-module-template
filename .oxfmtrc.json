@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "ignorePatterns": [".yarnrc.yml", "CHANGELOG.md"],
+  "ignorePatterns": [".yarnrc.yml"],
   "printWidth": 80,
   "quoteProps": "as-needed",
   "singleQuote": true,
