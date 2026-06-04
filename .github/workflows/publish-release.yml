@@ -54,6 +54,8 @@ jobs:
         with:
           slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
           subteam: S042S7RE4AE # @metamask-npm-publishers
+        env:
+          SKIP_PREPACK: true
 
   publish-npm:
     name: Publish to NPM
@@ -82,6 +84,8 @@ jobs:
           # token in the `npm-publish` environment, and delete it after the
           # initial publish.
           npm-token: ${{ secrets.NPM_TOKEN }}
+        env:
+          SKIP_PREPACK: true
 
   get-release-version:
     name: Get release version
