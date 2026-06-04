@@ -81,10 +81,13 @@
     "vite": "^8.0.8",
     "vitest": "^4.1.4"
   },
+  "resolutions": {
+    "fflate": "0.8.2"
+  },
   "engines": {
     "node": "^20 || ^22 || >=24"
   },
-  "packageManager": "yarn@4.14.1",
+  "packageManager": "yarn@4.16.0",
   "lavamoat": {
     "allowScripts": {
       "@lavamoat/preinstall-always-fail": false,
