@@ -18,6 +18,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
+          persist-credentials: false
           node-version: ${{ matrix.node-version }}
           cache-node-modules: ${{ matrix.node-version == '24.x' }}
 
@@ -33,6 +34,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
+          persist-credentials: false
           node-version: ${{ matrix.node-version }}
       - run: yarn build
       - name: Require clean working directory
@@ -55,6 +57,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
+          persist-credentials: false
           node-version: ${{ matrix.node-version }}
       - run: yarn lint
       - name: Validate RC changelog
@@ -71,6 +74,21 @@ jobs:
             exit 1
           fi
 
+  lint-workflows:
+    name: Lint workflows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Lint workflows
+        uses: zizmorcore/zizmor-action@5f14fd08f7cf1cb1609c1e344975f152c7ee938d
+        with:
+          advanced-security: false
+          annotations: true
+          version: v1.25.2
+
   test:
     name: Test
     needs: prepare
@@ -83,6 +101,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
+          persist-credentials: false
           node-version: ${{ matrix.node-version }}
       - run: yarn test
       - name: Require clean working directory
@@ -105,6 +124,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
+          persist-credentials: false
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies via Yarn
         run: rm yarn.lock && YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn

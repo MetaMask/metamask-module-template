@@ -31,6 +31,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: true
+          persist-credentials: false
 
           # This is to guarantee that the most recent tag is fetched. This can
           # be configured to a more reasonable value by consumers.

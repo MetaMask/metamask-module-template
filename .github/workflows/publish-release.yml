@@ -22,6 +22,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: true
+          persist-credentials: false
           ref: ${{ github.sha }}
       - name: Build
         run: yarn build
@@ -44,6 +45,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: true
+          persist-credentials: false
           ref: ${{ github.sha }}
       - name: Restore build artifacts
         uses: actions/download-artifact@v8
@@ -70,6 +72,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: true
+          persist-credentials: false
           ref: ${{ github.sha }}
       - name: Restore build artifacts
         uses: actions/download-artifact@v8
@@ -96,6 +99,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
         with:
+          persist-credentials: false
           ref: ${{ github.sha }}
       - id: get-release-version
         shell: bash
@@ -134,6 +138,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: true
+          persist-credentials: false
           ref: ${{ github.sha }}
       - uses: MetaMask/action-publish-release@v3
         env:
