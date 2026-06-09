@@ -17,6 +17,7 @@ jobs:
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: false
+          persist-credentials: false
       - name: Download actionlint
         id: download-actionlint
         run: bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/914e7df21a07ef503a81201c76d2b11c789d3fca/scripts/download-actionlint.bash) 1.7.12
@@ -90,9 +91,10 @@ jobs:
     permissions: {}
     steps:
       - name: Check that all jobs have passed
+        env:
+          PASSED: ${{ needs.all-jobs-completed.outputs.PASSED }}
         run: |
-          passed="${{ needs.all-jobs-completed.outputs.PASSED }}"
-          if [[ $passed != "true" ]]; then
+          if [[ $PASSED != "true" ]]; then
             exit 1
           fi
 
