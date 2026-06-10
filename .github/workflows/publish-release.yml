@@ -52,7 +52,7 @@ jobs:
         with:
           name: publish-release-artifacts-${{ github.sha }}
       - name: Dry Run Publish
-        uses: MetaMask/action-npm-publish@v6
+        uses: MetaMask/action-npm-publish@v6.2.0
         with:
           slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
           subteam: S042S7RE4AE # @metamask-npm-publishers
@@ -79,7 +79,7 @@ jobs:
         with:
           name: publish-release-artifacts-${{ github.sha }}
       - name: Publish
-        uses: MetaMask/action-npm-publish@v6
+        uses: MetaMask/action-npm-publish@v6.2.0
         with:
           # This `NPM_TOKEN` needs to be manually set to publish a package for
           # the first time only.
