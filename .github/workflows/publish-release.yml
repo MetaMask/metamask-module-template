@@ -55,6 +55,7 @@ jobs:
       - name: Dry Run Publish
         uses: MetaMask/action-npm-publish@v6
         with:
+          dry-run: true
           slack-webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
           subteam: S042S7RE4AE # @metamask-npm-publishers
         env:
@@ -83,6 +84,7 @@ jobs:
       - name: Publish
         uses: MetaMask/action-npm-publish@v6
         with:
+          dry-run: false
           # This `NPM_TOKEN` needs to be manually set to publish a package for
           # the first time only.
           # Look in the repository settings under "Environments", and set this
