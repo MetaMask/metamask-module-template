@@ -222,6 +222,29 @@ function expectExports(workspace) {
     });
 }
 
+/**
+ * Expect that the workspace has a package manager set, and that it is Yarn with
+ * a sha256 hash.
+ *
+ * @param {Workspace} workspace - The workspace to check.
+ */
+function expectYarnPackageManager(workspace) {
+  expectWorkspaceField(workspace, 'packageManager');
+
+  const { packageManager } = workspace.manifest;
+  if (!packageManager.startsWith('yarn@')) {
+    workspace.error(
+      `Expected packageManager to start with "yarn@<version>", but got "${packageManager}".`,
+    );
+  }
+
+  if (!packageManager.includes('sha256')) {
+    workspace.error(
+      `Expected packageManager to include a sha256 hash, but got "${packageManager}".`,
+    );
+  }
+}
+
 module.exports = defineConfig({
   /**
    * Define the constraints for this project.
@@ -262,6 +285,9 @@ module.exports = defineConfig({
 
     // The package must specify the expected minimum Node versions
     workspace.set('engines.node', '^20 || ^22 || >=24');
+
+    // The package must specify Yarn as the package manager, with a sha256 hash.
+    expectYarnPackageManager(workspace);
 
     // The package must provide the location of the CommonJS-compatible
     // entrypoint and its matching type declaration file.
