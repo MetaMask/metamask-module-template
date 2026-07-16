@@ -52,6 +52,7 @@
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.15.3",
     "@lavamoat/allow-scripts": "^5.1.0",
+    "@lavamoat/harden": "^0.4.0",
     "@lavamoat/preinstall-always-fail": "^2.0.0",
     "@metamask/auto-changelog": "^6.1.0",
     "@metamask/eslint-config": "^15.0.0",
@@ -84,6 +85,13 @@
   "resolutions": {
     "fflate": "0.8.2"
   },
+  "devEngines": {
+    "packageManager": {
+      "name": "yarn",
+      "version": ">=4.16.0+sha256.ba05224324578801b9cc98170d64aa50b9a36733b440fb0942306da3fbbdc7d1",
+      "onFail": "error"
+    }
+  },
   "engines": {
     "node": "^22 || ^24 || >=26"
   },
@@ -93,5 +101,8 @@
       "@lavamoat/preinstall-always-fail": false,
       "eslint-plugin-import-x>unrs-resolver": false
     }
+  },
+  "scriptsConfig": {
+    "#default": "lavamoat/scripts.loose.json"
   }
 }
