@@ -5,7 +5,7 @@ import vitest from '@metamask/eslint-config-vitest';
 
 const config = createConfig([
   {
-    ignores: ['dist/', 'docs/', '.yarn/'],
+    ignores: ['dist/', 'docs/', '.yarn/', 'lavamoat/'],
   },
 
   {
