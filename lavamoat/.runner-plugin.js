@@ -17,6 +17,7 @@
 module.exports = {
   name: '@yarnpkg/plugin-runner',
   factory: function (/** @type {NodeJS.Require} */ require) {
+    const { tmpdir } = require('node:os')
     return {
       hooks: {
         /** @type {WrapScriptExecutionHook} */
@@ -25,25 +26,26 @@ module.exports = {
           project,
           locator,
           scriptName,
-          extra,
+          extra
         ) => {
-          const path = require('node:path');
-          const fs = require('node:fs');
-          const workspace = project.tryWorkspaceByLocator(locator);
+          const path = require('node:path')
+          const fs = require('node:fs')
+          const workspace = project.tryWorkspaceByLocator(locator)
 
           if (!workspace) {
-            // a script is being executed outside of a workspace context, so we can't apply any custom logic
+            // a script is being executed outside of a workspace context, so we
+            // can't apply any custom logic.
             // This is the case when a postinstal is running.
 
             // "Do nothing" - return the original executor immediately
             // without running any custom plugin logic or reading manifests.
             // TODO: implement wrapping these scripts with reasonable defaults
-            return executor;
+            return executor
           }
 
-          const pkgJson = workspace.manifest.raw;
+          const pkgJson = workspace.manifest.raw
           const binFolder =
-            extra.env.BERRY_BIN_FOLDER || `node_modules${path.sep}.bin`;
+            extra.env.BERRY_BIN_FOLDER || `node_modules${path.sep}.bin`
 
           const wrapper = makeRunScriptWrapper(
             {
@@ -51,31 +53,36 @@ module.exports = {
               scriptPayload: extra.script,
               projectRoot: extra.cwd,
               pathBinMatcher: (fragment) => {
-                return fragment.endsWith(binFolder);
+                return fragment.endsWith(binFolder)
               },
               customizePermissionsConfig: addMandatoryReads,
               readScriptsConfig: () => {
-                return pkgJson.scriptsConfig;
+                return pkgJson.scriptsConfig
               },
             },
             {
               readFileSync: fs.readFileSync,
               pathJoin: path.join,
               pathDelimiter: path.delimiter,
-            },
-          );
+              tmpdir,
+              realpathSync: fs.realpathSync,
+            }
+          )
 
-          const newEnv = wrapper.processEnv(extra.env);
+          // extra.env is a reference to the mutable object, but a different variable
+          // containing that reference is used within execute, so we must amend not
+          // replace it.
+          const newEnv = wrapper.processEnv(extra.env)
           for (const key of Object.keys(extra.env)) {
-            delete extra.env[key];
+            delete extra.env[key]
           }
-          Object.assign(extra.env, newEnv);
-          return executor;
+          Object.assign(extra.env, newEnv)
+          return executor
         },
       },
-    };
+    }
   },
-};
+}
 
 /**
  * @param {Record<string, boolean | string | string[]>} configOptions
@@ -83,30 +90,13 @@ module.exports = {
  */
 function addMandatoryReads(configOptions, _env) {
   if (!configOptions['--permission']) {
-    return;
+    return
   }
-  if (!Array.isArray(configOptions['--allow-fs-read'])) {
-    configOptions['--allow-fs-read'] = [];
-  }
-  if (!Array.isArray(configOptions['--allow-fs-write'])) {
-    configOptions['--allow-fs-write'] = [];
-  }
-
-  // figure out the /tmp dir for the current platform
-
-  const tmpdir =
-    process.platform === 'win32'
-      ? process.env.TEMP || '' // make typescript shut up
-      : '/tmp';
-  // yarn script execution makes heavy use of temporary dirs
-  configOptions['--allow-fs-read'].push(tmpdir);
-  configOptions['--allow-fs-write'].push(tmpdir);
+  configOptions['--allow-fs-tmp'] = true // yarn always uses tmp dirs.
 }
-/// <reference path="./makeRunScriptWrapper.global.d.ts" />
 
-/**
- * @typedef {Record<string, boolean | string | string[]>} ConfigOptions
- */
+;;
+/// <reference path="./makeRunScriptWrapper.global.d.ts" />
 
 /**
  * @param {MakeRunScriptWrapperOptions} param0
@@ -122,13 +112,13 @@ function makeRunScriptWrapper(
     customizePermissionsConfig,
     readScriptsConfig,
   },
-  { readFileSync, pathJoin, pathDelimiter },
+  { readFileSync, pathJoin, pathDelimiter, tmpdir, realpathSync }
 ) {
-  const DEFAULT_PERMISSION_KEY = '#default';
+  const DEFAULT_PERMISSION_KEY = '#default'
 
   /** @param {string} filePath */
   function readJsonFile(filePath) {
-    return JSON.parse(readFileSync(filePath, 'utf8'));
+    return JSON.parse(readFileSync(filePath, 'utf8'))
   }
 
   /**
@@ -143,30 +133,91 @@ function makeRunScriptWrapper(
     projectRoot,
   }) {
     if (!scriptsConfig) {
-      return {};
+      return {}
     }
     const configName =
-      scriptsConfig[scriptName] || scriptsConfig[DEFAULT_PERMISSION_KEY];
+      scriptsConfig[scriptName] || scriptsConfig[DEFAULT_PERMISSION_KEY]
 
     // config needs to be optional, because it's opt-in first and specifying a default turns it opt-out.
     if (!configName) {
-      return {};
+      return {}
     }
-    const configPath = pathJoin(projectRoot, configName);
-    let conf;
+    const configPath = pathJoin(projectRoot, configName)
+    let conf
     try {
-      conf = readJsonFile(configPath);
+      conf = readJsonFile(configPath)
       if (typeof conf !== 'object' || conf === null) {
-        throw Error(`Expected an object, got ${typeof conf}`);
+        throw Error(`Expected an object, got ${typeof conf}`)
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
+      const message = err instanceof Error ? err.message : String(err)
       throw Error(
         `[LavaMoat] Error loading script config file "${configPath}": ${message}`,
-        { cause: err },
-      );
+        { cause: err }
+      )
     }
-    return conf;
+    return conf
+  }
+
+  /**
+   * Adds features we'd want in Node.js permissions model and intend to
+   * eventually upstream
+   *
+   * @param {ConfigOptions} configOptions
+   * @param {NodeJS.ProcessEnv} env
+   * @returns {void}
+   */
+  function permissionsModelCompatibilityExtensions(configOptions, env) {
+    // 1. support env variables as values in allow-fs-*
+    /**
+     * @param {string} value
+     * @returns {string}
+     */
+    const replaceEnvVar = (value) => {
+      const envVarMatch = value.match(/^\$([A-Z_][A-Z0-9_]*)$/i)
+      if (envVarMatch) {
+        const envVarName = envVarMatch[1]
+        if (env[envVarName] !== undefined) {
+          return env[envVarName]
+        } else {
+          console.error(
+            `[LavaMoat] Environment variable "${envVarName}" referenced in config but not found in environment`
+          )
+        }
+      }
+      return value
+    }
+
+    for (const key of ['--allow-fs-read', '--allow-fs-write']) {
+      if (Array.isArray(configOptions[key])) {
+        configOptions[key] = configOptions[key].map(replaceEnvVar)
+      }
+    }
+
+    // 2. tmp write - crossplatform
+    if (configOptions['--allow-fs-tmp'] === true) {
+      delete configOptions['--allow-fs-tmp']
+      if (configOptions['--allow-fs-write']) {
+        if (typeof configOptions['--allow-fs-write'] === 'string') {
+          configOptions['--allow-fs-write'] = [
+            configOptions['--allow-fs-write'],
+          ]
+        }
+        if (configOptions['--allow-fs-write'] === true) {
+          return // none of this matters
+        }
+      } else {
+        // do this for both undefined and false
+        configOptions['--allow-fs-write'] = []
+      }
+      const tmp = tmpdir()
+      configOptions['--allow-fs-write'].push(tmp)
+      // because macos is being weird
+      const tmpRealPath = realpathSync(tmp)
+      if (tmpRealPath !== tmp) {
+        configOptions['--allow-fs-write'].push(tmpRealPath)
+      }
+    }
   }
 
   /** @param {ConfigOptions} configOptions */
@@ -174,15 +225,15 @@ function makeRunScriptWrapper(
     return Object.entries(configOptions)
       .map(([arg, value]) => {
         if (typeof value === 'boolean') {
-          return value ? arg : '';
+          return value ? arg : ''
         } else if (Array.isArray(value)) {
-          return value.map((v) => `${arg}="${v}"`).join(' ');
+          return value.map((v) => `${arg}="${v}"`).join(' ')
         } else {
-          return `${arg}="${value}"`;
+          return `${arg}="${value}"`
         }
       })
       .filter(Boolean)
-      .join(' ');
+      .join(' ')
   }
 
   /**
@@ -194,14 +245,16 @@ function makeRunScriptWrapper(
    */
   function installNodeOptions(existingOptions, configOptions, env) {
     if (!configOptions) {
-      return existingOptions || '';
+      return existingOptions || ''
     }
 
-    customizePermissionsConfig(configOptions, env);
+    customizePermissionsConfig(configOptions, env)
 
-    const confOption = makeFlagsFromConfig(configOptions);
+    permissionsModelCompatibilityExtensions(configOptions, env)
 
-    return `${existingOptions || ''} ${confOption.trim()}`.trim();
+    const confOption = makeFlagsFromConfig(configOptions)
+
+    return `${existingOptions || ''} ${confOption.trim()}`.trim()
   }
 
   /**
@@ -212,93 +265,93 @@ function makeRunScriptWrapper(
    * @returns {NodeJS.ProcessEnv}
    */
   function filterEnv(env, lavamoatDir) {
-    const banFilePath = pathJoin(lavamoatDir, '.env.ban.json');
-    let banConfig;
+    const banFilePath = pathJoin(lavamoatDir, '.env.ban.json')
+    let banConfig
 
     try {
-      banConfig = readJsonFile(banFilePath);
+      banConfig = readJsonFile(banFilePath)
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
+      const message = err instanceof Error ? err.message : String(err)
       console.error(
-        `[LavaMoat] Warning: Failed to read .env.ban.json: ${message}.`,
-      );
-      return env;
+        `[LavaMoat] Warning: Failed to read .env.ban.json: ${message}.`
+      )
+      return env
     }
-    let banKeywords = [];
+    let banKeywords = []
     try {
       if (Array.isArray(banConfig)) {
-        banKeywords.push(...banConfig);
+        banKeywords.push(...banConfig)
       } else {
-        throw Error(`Expected .env.ban.json to contain an array of keywords`);
+        throw Error(`Expected .env.ban.json to contain an array of keywords`)
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : String(err);
+      const message = err instanceof Error ? err.message : String(err)
       console.error(
-        `[LavaMoat] Warning: Failed to read .env.ban.json: ${message}.`,
-      );
-      return env;
+        `[LavaMoat] Warning: Failed to read .env.ban.json: ${message}.`
+      )
+      return env
     }
 
     /** @type {NodeJS.ProcessEnv} */
-    const filteredEnv = {};
-    const bannedEnv = [];
-    banKeywords = banKeywords.map((keyword) => keyword.toLowerCase());
+    const filteredEnv = {}
+    const bannedEnv = []
+    banKeywords = banKeywords.map((keyword) => keyword.toLowerCase())
     for (const [key, value] of Object.entries(env)) {
       if (
         !key.toLowerCase().startsWith('npm_config') &&
         banKeywords.some((keyword) => key.toLowerCase().includes(keyword))
       ) {
-        bannedEnv.push(key);
+        bannedEnv.push(key)
       } else {
-        filteredEnv[key] = value;
+        filteredEnv[key] = value
       }
     }
     if (bannedEnv.length > 0) {
       console.error(
-        `[LavaMoat] Warning: The following environment variables were banned: ${bannedEnv.join(', ')}`,
-      );
+        `[LavaMoat] Warning: The following environment variables were banned: ${bannedEnv.join(', ')}`
+      )
     }
-    return filteredEnv;
+    return filteredEnv
   }
 
   /** @param {string} PATH */
   function envPathOpinions(PATH) {
-    const pathFragments = PATH.split(pathDelimiter);
+    const pathFragments = PATH.split(pathDelimiter)
     // This is to eliminate bin confusion attacks.
     // Find node_modules/.bin and remove it, put it on the end that gets looked up last when looking for a name in the path.
 
     /** @type {string[]} */
-    const filteredFragments = [];
+    const filteredFragments = []
     /** @type {string[]} */
-    const nodeModulesBinFragments = [];
+    const nodeModulesBinFragments = []
 
     for (const fragment of pathFragments) {
       if (pathBinMatcher(fragment)) {
-        nodeModulesBinFragments.push(fragment);
+        nodeModulesBinFragments.push(fragment)
       } else {
-        filteredFragments.push(fragment);
+        filteredFragments.push(fragment)
       }
     }
     // Why would there be multiple bin fragments? In a npm workspace, local bin and workspace root bin is added
-    filteredFragments.push(...nodeModulesBinFragments);
-    return filteredFragments.join(pathDelimiter);
+    filteredFragments.push(...nodeModulesBinFragments)
+    return filteredFragments.join(pathDelimiter)
   }
 
   return {
     processEnv: (existingEnv) => {
-      const scriptsConfig = readScriptsConfig(projectRoot);
+      const scriptsConfig = readScriptsConfig(projectRoot)
       const config = readConfig({
         scriptsConfig,
         scriptName,
         projectRoot,
-      });
+      })
 
       // Smell: Windows environment variables are case-insensitive, but Node's process.env
       // might expose it as 'Path' instead of 'PATH'. Checking both ensures it doesn't get wiped out.
 
-      const existingPath = existingEnv.PATH || existingEnv.Path || '';
+      const existingPath = existingEnv.PATH || existingEnv.Path || ''
 
-      const lavamoatDir = pathJoin(projectRoot, 'lavamoat');
+      const lavamoatDir = pathJoin(projectRoot, 'lavamoat')
 
       const fixedEnv = {
         ...filterEnv(existingEnv, lavamoatDir),
@@ -306,10 +359,12 @@ function makeRunScriptWrapper(
         NODE_OPTIONS: installNodeOptions(
           existingEnv.NODE_OPTIONS,
           config.nodeOptions,
-          existingEnv,
+          existingEnv
         ),
-      };
-      return fixedEnv;
+      }
+      return fixedEnv
     },
-  };
+  }
 }
+
+
