@@ -46,8 +46,9 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:constraints --fix && yarn lint:misc --write && yarn lint:dependencies:fix && yarn lint:changelog --fix",
     "lint:misc": "oxfmt --ignore-path .gitignore",
     "prepack": "./scripts/prepack.sh",
-    "test": "vitest && attw --pack",
-    "test:watch": "vitest --watch"
+    "test": "vitest && yarn test:package",
+    "test:watch": "vitest --watch",
+    "test:package": "yarn pack --out .yarn/package.tgz && attw .yarn/package.tgz"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.15.3",
@@ -102,6 +103,8 @@
     }
   },
   "scriptsConfig": {
-    "#default": "lavamoat/scripts.loose.json"
+    "#default": "lavamoat/scripts.loose.json",
+    "test": "lavamoat/scripts.test.json",
+    "test:watch": "lavamoat/scripts.test.json"
   }
 }
