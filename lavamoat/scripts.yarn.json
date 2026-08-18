@@ -5,7 +5,7 @@
     "--allow-fs-read": ["/"],
     "--allow-fs-write": ["./"],
     "--allow-child-process": true,
-    "--allow-net": false,
+    "--allow-net": true,
     "--allow-worker": false,
     "--allow-addons": false,
     "--allow-wasi": false,
