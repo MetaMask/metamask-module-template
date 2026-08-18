@@ -1,5 +1,5 @@
 {
-  "notes": "Denies all powerful IO capabilities that a linter script should not need. If a script needs more permissions, copy this file and edit.",
+  "notes": "Denies all powerful IO capabilities. This provides a strict default and if you need a script to have more permissions, choose another scripts.*.json file instead of editing this one.",
   "nodeOptions": {
     "--permission": true,
     "--allow-fs-read": ["./"],
