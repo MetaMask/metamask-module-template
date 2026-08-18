@@ -284,7 +284,7 @@ module.exports = defineConfig({
     workspace.set('repository.url', `${workspaceRepository}.git`);
 
     // The package must specify the expected minimum Node versions
-    workspace.set('engines.node', '^20 || ^22 || >=24');
+    workspace.set('engines.node', '^22 || ^24 || >=26');
 
     // The package must specify Yarn as the package manager, with a sha256 hash.
     expectYarnPackageManager(workspace);
