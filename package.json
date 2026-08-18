@@ -40,8 +40,10 @@
     "lint": "yarn lint:eslint && yarn lint:constraints && yarn lint:misc --check && yarn lint:dependencies --check && yarn lint:changelog",
     "lint:changelog": "auto-changelog validate --formatter oxfmt",
     "lint:constraints": "yarn constraints",
-    "lint:dependencies": "depcheck && yarn dedupe --check",
-    "lint:dependencies:fix": "depcheck && yarn dedupe",
+    "lint:dependencies": "yarn lint:dependencies:depcheck && yarn lint:dependencies:dedupe --check",
+    "lint:dependencies:depcheck": "depcheck",
+    "lint:dependencies:dedupe": "yarn dedupe",
+    "lint:dependencies:fix": "yarn lint:dependencies:depcheck && yarn lint:dependencies:dedupe",
     "lint:eslint": "eslint .",
     "lint:fix": "yarn lint:eslint --fix && yarn lint:constraints --fix && yarn lint:misc --write && yarn lint:dependencies:fix && yarn lint:changelog --fix",
     "lint:misc": "oxfmt --ignore-path .gitignore",
@@ -103,7 +105,15 @@
     }
   },
   "scriptsConfig": {
-    "#default": "lavamoat/scripts.loose.json",
+    "#default": "lavamoat/scripts.strict.json",
+    "lint": "lavamoat/scripts.yarn.json",
+    "lint:changelog": "lavamoat/scripts.lint.json",
+    "lint:constraints": "lavamoat/scripts.yarn.json",
+    "lint:dependencies": "lavamoat/scripts.yarn.json",
+    "lint:dependencies:dedupe": "lavamoat/scripts.yarn.json",
+    "lint:eslint": "lavamoat/scripts.lint.json",
+    "lint:fix": "lavamoat/scripts.yarn.json",
+    "lint:misc": "lavamoat/scripts.lint.json",
     "test": "lavamoat/scripts.test.json",
     "test:watch": "lavamoat/scripts.test.json"
   }

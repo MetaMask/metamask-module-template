@@ -6,9 +6,9 @@
     "--allow-fs-write": ["./", "$GITHUB_STEP_SUMMARY"],
     "--allow-net": false,
     "--allow-child-process": true,
-    "--allow-worker": true,
+    "--allow-worker": false,
     "--allow-addons": true,
-    "--allow-wasi": true,
+    "--allow-wasi": false,
     "--allow-inspector": false
   }
 }
