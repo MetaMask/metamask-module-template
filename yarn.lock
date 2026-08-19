@@ -574,16 +574,16 @@ __metadata:
   linkType: hard
 
 "@metamask/eslint-config-vitest@npm:^15.0.0":
-  version: 15.0.0
-  resolution: "@metamask/eslint-config-vitest@npm:15.0.0"
+  version: 15.0.1
+  resolution: "@metamask/eslint-config-vitest@npm:15.0.1"
   dependencies:
     "@eslint/js": "npm:^9.11.0"
     globals: "npm:^15.9.0"
   peerDependencies:
-    "@metamask/eslint-config": ^15.0.0
+    "@metamask/eslint-config": "workspace:^"
     "@vitest/eslint-plugin": ^1.1.4
     eslint: ^9.11.0
-  checksum: 10/44be0a6e6c97ed090421f931817049edacbae97f64c21e4eda76abd17b930b9c984bb34b29a5b13eee3f3ac5456a64fe1744c883cc18403ac05e66c6907804ee
+  checksum: 10/a82a00fbc71c37f9d60465fe21b5fe7c2f41b37f43b7ed9eb643d01b90e71e72c67337569a295a3e3e4409186c7e363a57450b0a85b208dcd28eda80c1b615c3
   languageName: node
   linkType: hard
 
