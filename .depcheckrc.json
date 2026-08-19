@@ -10,6 +10,7 @@
     "@vitest/coverage-istanbul",
     "@vitest/eslint-plugin",
     "@yarnpkg/types",
+    "@yarnpkg/shell",
     "eslint-config-*",
     "eslint-import-resolver-typescript",
     "eslint-plugin-*",
