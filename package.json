@@ -111,6 +111,7 @@
     "lint:changelog": "lavamoat/scripts.lint.json",
     "lint:constraints": "lavamoat/scripts.yarn.json",
     "lint:dependencies": "lavamoat/scripts.yarn.json",
+    "lint:dependencies:fix": "lavamoat/scripts.yarn.json",
     "lint:dependencies:dedupe": "lavamoat/scripts.yarn.json",
     "lint:eslint": "lavamoat/scripts.lint.json",
     "lint:fix": "lavamoat/scripts.yarn.json",
