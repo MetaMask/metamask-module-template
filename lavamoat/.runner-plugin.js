@@ -254,7 +254,7 @@ function makeRunScriptWrapper(
 
     const confOption = makeFlagsFromConfig(configOptions)
 
-    return `${existingOptions || ''} ${confOption.trim()}`.trim()
+    return confOption.trim()
   }
 
   /**

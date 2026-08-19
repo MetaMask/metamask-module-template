@@ -1,6 +1,7 @@
 {
   "notes": "Denies all powerful IO capabilities. This provides a strict default and if you need a script to have more permissions, choose another scripts.*.json file instead of editing this one.",
   "nodeOptions": {
+    "--disable-warning": "SecurityWarning",
     "--permission": true,
     "--allow-fs-read": ["./"],
     "--allow-fs-write": ["./"],
