@@ -46,6 +46,6 @@ jobs:
           publish_dir: ./docs
           destination_dir: ${{ inputs.destination_dir }}
       - name: Show warning if the get-token step failed
-        if: ${{ steps.get-token.outcome == 'failed' }}
+        if: ${{ steps.get-token.outcome == 'failure' }}
         run: |
           echo "::warning::The docs publishing workflow failed because the required token could not be obtained. If you want to publish docs for this repo, you'll need to add a policy to the Token Exchange Service."
