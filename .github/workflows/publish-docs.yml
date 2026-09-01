@@ -26,14 +26,18 @@ jobs:
           token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
           permissions: |
             contents: write
+        continue-on-error: true
       - name: Checkout and setup environment
+        if: ${{ steps.get-token.outcome == 'success' }}
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: true
           persist-credentials: false
       - name: Run build script
+        if: ${{ steps.get-token.outcome == 'success' }}
         run: yarn build:docs
       - name: Deploy to `${{ inputs.destination_dir }}` directory of `gh-pages` branch
+        if: ${{ steps.get-token.outcome == 'success' }}
         uses: peaceiris/actions-gh-pages@de7ea6f8efb354206b205ef54722213d99067935
         with:
           # A policy must be registered for this repo and workflow
@@ -41,3 +45,7 @@ jobs:
           personal_token: ${{ steps.get-token.outputs.token }}
           publish_dir: ./docs
           destination_dir: ${{ inputs.destination_dir }}
+      - name: Show warning if the get-token step failed
+        if: ${{ steps.get-token.outcome == 'failed' }}
+        run: |
+          echo "::warning::The docs publishing workflow failed because the required token could not be obtained. If you want to publish docs for this repo, you'll need to add a policy to the Token Exchange Service."
