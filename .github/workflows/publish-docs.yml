@@ -6,9 +6,6 @@ on:
       destination_dir:
         required: true
         type: string
-    secrets:
-      PUBLISH_DOCS_TOKEN:
-        required: true
 
 jobs:
   publish-docs-to-gh-pages:
@@ -17,22 +14,38 @@ jobs:
     environment: github-pages
     permissions:
       contents: write
+      id-token: write
     steps:
       - name: Ensure `destination_dir` is not empty
         if: ${{ inputs.destination_dir == '' }}
         run: exit 1
+      - name: Get access token
+        id: get-token
+        uses: MetaMask/github-tools/.github/actions/get-token@v1
+        with:
+          token-exchange-url: ${{ vars.TOKEN_EXCHANGE_URL }}
+          permissions: |
+            contents: write
+        continue-on-error: true
       - name: Checkout and setup environment
+        if: ${{ steps.get-token.outcome == 'success' }}
         uses: MetaMask/action-checkout-and-setup@v3
         with:
           is-high-risk-environment: true
           persist-credentials: false
       - name: Run build script
+        if: ${{ steps.get-token.outcome == 'success' }}
         run: yarn build:docs
       - name: Deploy to `${{ inputs.destination_dir }}` directory of `gh-pages` branch
+        if: ${{ steps.get-token.outcome == 'success' }}
         uses: peaceiris/actions-gh-pages@de7ea6f8efb354206b205ef54722213d99067935
         with:
-          # This `PUBLISH_DOCS_TOKEN` needs to be manually set per-repository.
-          # Look in the repository settings under "Environments", and set this token in the `github-pages` environment.
-          personal_token: ${{ secrets.PUBLISH_DOCS_TOKEN }}
+          # A policy must be registered for this repo and workflow
+          # within the Token Exchange Service.
+          personal_token: ${{ steps.get-token.outputs.token }}
           publish_dir: ./docs
           destination_dir: ${{ inputs.destination_dir }}
+      - name: Show warning if the get-token step failed
+        if: ${{ steps.get-token.outcome == 'failure' }}
+        run: |
+          echo "::warning::The docs publishing workflow failed because the required token could not be obtained. If you want to publish docs for this repo, you'll need to add a policy to the Token Exchange Service."
