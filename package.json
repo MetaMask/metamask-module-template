@@ -27,6 +27,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
+    "audit": "node ./scripts/audit.ts",
     "build": "tsc --project tsconfig.build.json",
     "build:docs": "typedoc",
     "lint": "yarn lint:oxlint && yarn lint:constraints && yarn lint:misc --check && yarn lint:dependencies --check && yarn lint:changelog",
@@ -52,7 +53,8 @@
     "@metamask/oxlint-config-nodejs": "^0.1.1",
     "@metamask/oxlint-config-typescript": "^0.1.1",
     "@metamask/oxlint-config-vitest": "^0.1.1",
-    "@types/node": "^18.18",
+    "@types/node": "^26.6.2",
+    "@types/yargs": "^17.0.35",
     "@typescript/native": "npm:typescript@^7.0.2",
     "@vitest/coverage-istanbul": "^4.1.4",
     "@vitest/eslint-plugin": "^1.1.4",
@@ -65,7 +67,8 @@
     "typedoc": "^0.26.11",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "vite": "^8.0.8",
-    "vitest": "^4.1.4"
+    "vitest": "^4.1.4",
+    "yargs": "^18.2.0"
   },
   "resolutions": {
     "fflate": "0.8.2"
@@ -88,6 +91,7 @@
   },
   "scriptsConfig": {
     "#default": "lavamoat/scripts.strict.json",
+    "audit": "lavamoat/scripts.yarn.json",
     "build": "lavamoat/scripts.build.json",
     "lint": "lavamoat/scripts.yarn.json",
     "lint:changelog": "lavamoat/scripts.lint.json",
