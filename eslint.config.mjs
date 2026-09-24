@@ -28,6 +28,9 @@ const config = createConfig([
       // Handled by Oxfmt.
       'prettier/prettier': 'off',
       'import-x/order': 'off',
+
+      // Does not make sense with ESM.
+      'import-x/no-useless-path-segments': 'off',
     },
   },
 
