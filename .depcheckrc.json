@@ -7,6 +7,7 @@
     "@metamask/eslint-config-*",
     "@types/*",
     "@typescript-eslint/utils",
+    "@typescript/native",
     "@vitest/coverage-istanbul",
     "@vitest/eslint-plugin",
     "@yarnpkg/types",
@@ -17,6 +18,7 @@
     "ts-node",
     "typedoc",
     "typescript-eslint",
+    "typescript",
     "vite"
   ]
 }
