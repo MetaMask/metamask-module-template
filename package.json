@@ -13,20 +13,12 @@
   "files": [
     "dist"
   ],
+  "type": "module",
   "sideEffects": false,
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.cts",
   "exports": {
     ".": {
-      "import": {
-        "types": "./dist/index.d.mts",
-        "default": "./dist/index.mjs"
-      },
-      "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
-      }
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     },
     "./package.json": "./package.json"
   },
@@ -35,7 +27,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "build": "ts-bridge --project tsconfig.build.json --clean",
+    "build": "tsc --project tsconfig.build.json",
     "build:docs": "typedoc",
     "lint": "yarn lint:eslint && yarn lint:constraints && yarn lint:misc --check && yarn lint:dependencies --check && yarn lint:changelog",
     "lint:changelog": "auto-changelog validate --formatter oxfmt",
@@ -48,13 +40,10 @@
     "lint:fix": "yarn lint:eslint --fix && yarn lint:constraints --fix && yarn lint:misc --write && yarn lint:dependencies:fix && yarn lint:changelog --fix",
     "lint:misc": "oxfmt --ignore-path .gitignore",
     "prepack": "./scripts/prepack.sh",
-    "test": "yarn test:vitest && yarn test:package",
-    "test:vitest": "vitest",
-    "test:watch": "yarn test:vitest --watch",
-    "test:package": "yarn pack --out .yarn/package.tgz && attw .yarn/package.tgz"
+    "test": "vitest",
+    "test:watch": "vitest --watch"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.15.3",
     "@lavamoat/allow-scripts": "^5.1.0",
     "@lavamoat/preinstall-always-fail": "^2.0.0",
     "@metamask/auto-changelog": "^6.2.1",
@@ -62,7 +51,6 @@
     "@metamask/eslint-config-nodejs": "^15.0.0",
     "@metamask/eslint-config-typescript": "^15.0.0",
     "@metamask/eslint-config-vitest": "^15.0.0",
-    "@ts-bridge/cli": "^0.6.3",
     "@types/node": "^18.18",
     "@typescript-eslint/utils": "^8.6.0",
     "@vitest/coverage-istanbul": "^4.1.4",
@@ -78,7 +66,6 @@
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-promise": "^7.1.0",
     "oxfmt": "^0.45.0",
-    "ts-node": "^10.7.0",
     "typedoc": "^0.26.11",
     "typescript": "~5.7.3",
     "typescript-eslint": "^8.48.1",
@@ -107,6 +94,7 @@
   },
   "scriptsConfig": {
     "#default": "lavamoat/scripts.strict.json",
+    "build": "lavamoat/scripts.build.json",
     "lint": "lavamoat/scripts.yarn.json",
     "lint:changelog": "lavamoat/scripts.lint.json",
     "lint:constraints": "lavamoat/scripts.yarn.json",
@@ -117,9 +105,7 @@
     "lint:fix": "lavamoat/scripts.yarn.json",
     "lint:misc": "lavamoat/scripts.lint.json",
     "prepack": "lavamoat/scripts.yarn.json",
-    "test": "lavamoat/scripts.yarn.json",
-    "test:vitest": "lavamoat/scripts.test.json",
-    "test:package": "lavamoat/scripts.test.json",
+    "test": "lavamoat/scripts.test.json",
     "test:watch": "lavamoat/scripts.test.json"
   }
 }
