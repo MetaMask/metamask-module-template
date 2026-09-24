@@ -94,6 +94,7 @@
   },
   "scriptsConfig": {
     "#default": "lavamoat/scripts.strict.json",
+    "build": "lavamoat/scripts.build.json",
     "lint": "lavamoat/scripts.yarn.json",
     "lint:changelog": "lavamoat/scripts.lint.json",
     "lint:constraints": "lavamoat/scripts.yarn.json",
