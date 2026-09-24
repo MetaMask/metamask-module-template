@@ -598,8 +598,11 @@ async function runScript(
 
     const child = spawn('node', ['--run', scriptName], {
       // The audited script's output is noise next to the generated config, so
-      // it is discarded unless it was asked for. Nothing is buffered, so a
-      // chatty script cannot blow up memory here.
+      // it is discarded unless it was asked for. Inheriting hands over this
+      // process's own descriptors, so the script's output keeps its place in
+      // the stream rather than arriving through a second pipe that a reader
+      // would have to interleave. Nothing is buffered either, so a chatty
+      // script cannot blow up memory here.
       stdio: verbose ? 'inherit' : 'ignore',
       env: {
         // eslint-disable-next-line n/no-process-env
@@ -849,6 +852,13 @@ function buildConfig(
  * Report the detail that does not fit the config format, but matters when
  * reviewing it.
  *
+ * Written to standard output, alongside the config rather than beside it. A
+ * reader merging two streams — a CI runner, say — orders them by arrival and
+ * can drop this report into the middle of the JSON. One stream keeps it in
+ * the order it was written. That leaves standard output human-facing under
+ * `--verbose`, which is the point of the flag; use `--out` when the config
+ * needs to be machine-readable.
+ *
  * @param summary - What the audited script exercised.
  */
 function report(summary: Summary): void {
@@ -858,11 +868,11 @@ function report(summary: Summary): void {
   ];
 
   if (details.some(([, values]) => values.size > 0)) {
-    console.error('\nObserved detail behind the boolean flags:');
+    console.log('\nObserved detail behind the boolean flags:');
 
     for (const [label, values] of details) {
       if (values.size > 0) {
-        console.error(
+        console.log(
           `  ${label}: ${[...values].sort(compareStrings).join(', ')}`,
         );
       }
@@ -870,10 +880,10 @@ function report(summary: Summary): void {
   }
 
   if (summary.escapes.size > 0) {
-    console.error(
+    console.log(
       '\nGrants reaching outside the project, with an example of the',
     );
-    console.error('path that caused each one:');
+    console.log('path that caused each one:');
 
     // Sorted by the same key the map is built from, so reads group before
     // writes and grants read in a stable order.
@@ -888,7 +898,7 @@ function report(summary: Summary): void {
           ? ' [omitted; the runner grants this]'
           : '';
 
-      console.error(`  ${action} ${grant}  ${cause}${more}${provided}`);
+      console.log(`  ${action} ${grant}  ${cause}${more}${provided}`);
     }
   }
 }
