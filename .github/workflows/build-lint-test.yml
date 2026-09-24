@@ -6,6 +6,12 @@ on:
 permissions:
   contents: read
 
+env:
+  # How each command below is invoked. Jobs override this when debug logging is
+  # enabled, so that commands run through the permission audit rather than
+  # directly, without every step needing a second copy of itself.
+  RUN: yarn
+
 jobs:
   prepare:
     name: Prepare
@@ -36,7 +42,10 @@ jobs:
           is-high-risk-environment: false
           persist-credentials: false
           node-version: ${{ matrix.node-version }}
-      - run: yarn build
+      - name: Enable permission audit for debug runs
+        if: ${{ runner.debug == '1' && matrix.node-version == '26.x' }}
+        run: echo 'RUN=yarn audit' >> "$GITHUB_ENV"
+      - run: $RUN build
       - name: Require clean working directory
         shell: bash
         run: |
@@ -59,7 +68,12 @@ jobs:
           is-high-risk-environment: false
           persist-credentials: false
           node-version: ${{ matrix.node-version }}
-      - run: yarn lint
+      - name: Enable permission audit for debug runs
+        if: ${{ runner.debug == '1' && matrix.node-version == '26.x' }}
+        run: echo 'RUN=yarn audit' >> "$GITHUB_ENV"
+      - run: $RUN lint
+        # The changelog steps below pass arguments, which `yarn audit` does not
+        # forward to the audited script, so they stay on plain `yarn`.
       - name: Validate RC changelog
         if: ${{ startsWith(github.head_ref, 'release/') }}
         run: yarn lint:changelog --rc
@@ -88,7 +102,10 @@ jobs:
           is-high-risk-environment: false
           persist-credentials: false
           node-version: ${{ matrix.node-version }}
-      - run: yarn test
+      - name: Enable permission audit for debug runs
+        if: ${{ runner.debug == '1' && matrix.node-version == '26.x' }}
+        run: echo 'RUN=yarn audit' >> "$GITHUB_ENV"
+      - run: $RUN test
       - name: Require clean working directory
         shell: bash
         run: |
@@ -113,7 +130,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Install dependencies via Yarn
         run: rm yarn.lock && YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn
-      - run: yarn test
+      - name: Enable permission audit for debug runs
+        if: ${{ runner.debug == '1' && matrix.node-version == '26.x' }}
+        run: echo 'RUN=yarn audit' >> "$GITHUB_ENV"
+      - run: $RUN test
       - name: Restore lockfile
         run: git restore yarn.lock
       - name: Require clean working directory

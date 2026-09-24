@@ -938,6 +938,11 @@ async function main(): Promise<void> {
   if (verbose) {
     report(summary);
   }
+
+  // Pass the script's own failure on, so that auditing a command can stand in
+  // for running it without turning a failure into a success. Set rather than
+  // exited, so that the config above is flushed first.
+  process.exitCode = exitCode;
 }
 
 await main();
