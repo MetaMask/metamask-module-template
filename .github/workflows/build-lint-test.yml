@@ -74,14 +74,12 @@ jobs:
         run: echo 'RUN=yarn audit --verbose' >> "$GITHUB_ENV"
       - name: Lint
         run: $RUN lint
-        # The changelog steps below pass arguments, which `yarn audit` does not
-        # forward to the audited script, so they stay on plain `yarn`.
       - name: Validate RC changelog
         if: ${{ startsWith(github.head_ref, 'release/') }}
-        run: yarn lint:changelog --rc
+        run: $RUN lint:changelog --rc
       - name: Validate changelog
         if: ${{ !startsWith(github.head_ref, 'release/') }}
-        run: yarn lint:changelog
+        run: $RUN lint:changelog
       - name: Require clean working directory
         shell: bash
         run: |

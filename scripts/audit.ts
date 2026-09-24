@@ -111,6 +111,13 @@ type Options = {
    * was chosen, rather than printing the config alone.
    */
   verbose: boolean;
+
+  /**
+   * Anything this script does not recognise, handed to the audited script
+   * rather than interpreted here, so that auditing a command that takes
+   * arguments reads the same as running it: `audit test --coverage`.
+   */
+  passthrough: string[];
 };
 
 /**
@@ -582,12 +589,14 @@ const COLLECTOR_URL = `data:text/javascript,${encodeURIComponent(
  * @param scriptName - The name of the script to run.
  * @param verbose - Whether to include verbose output.
  * @param logPath - Where the collector should append records.
+ * @param passthrough - Arguments to hand to the script itself.
  * @returns The exit code.
  */
 async function runScript(
   scriptName: string,
   verbose: boolean,
   logPath: string,
+  passthrough: string[],
 ): Promise<number> {
   return new Promise((resolveRun) => {
     const flags = [
@@ -596,7 +605,14 @@ async function runScript(
       `--import ${COLLECTOR_URL}`,
     ];
 
-    const child = spawn('node', ['--run', scriptName], {
+    // `node --run` forwards everything after its own `--` to the script, so
+    // auditing a command with arguments works the same as running it.
+    const args = ['--run', scriptName];
+    if (passthrough.length > 0) {
+      args.push('--', ...passthrough);
+    }
+
+    const child = spawn('node', args, {
       // The audited script's output is noise next to the generated config, so
       // it is discarded unless it was asked for. Inheriting hands over this
       // process's own descriptors, so the script's output keeps its place in
@@ -679,11 +695,10 @@ function collapse(grants: Set<string>): string[] {
  * @returns The options the script was invoked with.
  */
 async function parseArgv(): Promise<Options> {
-  const {
-    script: scriptName,
-    out: outPath,
-    verbose,
-  } = await yargs(hideBin(process.argv))
+  const argv = await yargs(hideBin(process.argv))
+    // Anything this script does not recognise belongs to the script being
+    // audited, so auditing a command reads the same as running it.
+    .parserConfiguration({ 'unknown-options-as-args': true })
     .command('$0 <script>', 'Audit the permissions a package script needs.')
     .positional('script', {
       describe: 'The `package.json` script to audit.',
@@ -700,13 +715,17 @@ async function parseArgv(): Promise<Options> {
       type: 'boolean',
       default: false,
     })
-    .strict()
+    .example('$0 test --coverage', 'Audit `test`, passing `--coverage` to it.')
+    .strictCommands()
     .parseAsync();
 
   return {
-    scriptName,
-    outPath,
-    verbose,
+    scriptName: argv.script,
+    outPath: argv.out,
+    verbose: argv.verbose,
+    // Unrecognised arguments belong to the audited script. Mapped because the
+    // parser types them loosely, having no way to know they are strings.
+    passthrough: argv._.map(String),
   };
 }
 
@@ -908,8 +927,8 @@ function report(summary: Summary): void {
  * granting exactly those.
  */
 async function main(): Promise<void> {
-  const { scriptName, outPath, verbose } = await parseArgv();
-  const exitCode = await runScript(scriptName, verbose, AUDIT_LOG);
+  const { scriptName, outPath, verbose, passthrough } = await parseArgv();
+  const exitCode = await runScript(scriptName, verbose, AUDIT_LOG, passthrough);
   const records = readRecords(AUDIT_LOG);
 
   rmSync(AUDIT_DIRECTORY, { recursive: true, force: true });
