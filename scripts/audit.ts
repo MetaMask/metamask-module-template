@@ -361,7 +361,7 @@ function buildPrefixes(): Prefix[] {
   add(tmpdir(), '$TMPDIR');
   add(homedir(), '$HOME');
 
-  return prefixes.toSorted((a, b) => b.prefix.length - a.prefix.length);
+  return prefixes.sort((a, b) => b.prefix.length - a.prefix.length);
 }
 
 const PREFIXES = buildPrefixes();
@@ -425,17 +425,19 @@ function isResolutionProbe(target: string): boolean {
  * Rewrite an absolute path into a portable, generalised grant.
  *
  * @param path - The absolute path from an audit record.
- * @returns The classified grant,
- * or undefined if the path is unusable.
+ * @param action - Whether the path was read or written. Resolution only ever
+ * reads, so a write to one of those paths is a genuine write and must not be
+ * widened to the whole file system.
+ * @returns The classified grant, or undefined if the path is unusable.
  */
-function generalise(path: string): Grant | undefined {
+function generalise(path: string, action: 'read' | 'write'): Grant | undefined {
   if (!path || !isAbsolute(path)) {
     return undefined;
   }
 
   const target = resolve(path);
 
-  if (isResolutionProbe(target)) {
+  if (action === 'read' && isResolutionProbe(target)) {
     return { grant: '/', kind: 'probe' };
   }
 
@@ -460,6 +462,12 @@ function generalise(path: string): Grant | undefined {
 
   // Outside anything recognisable, grant the top-level directory rather than a
   // machine-specific path.
+  //
+  // On Windows this drops the drive, so `C:\Windows` becomes `/Windows`. That
+  // is knowingly left alone: keeping the drive would put a path in the config
+  // that means nothing on any other machine, and Windows has no portable
+  // top-level namespace to rewrite it to. Such a grant needs a human anyway,
+  // and it is reported as an escape so that it gets one.
   const [, top] = target.split(sep);
   return { grant: top ? `/${top}` : '/', kind: 'outside' };
 }
@@ -625,7 +633,7 @@ function readRecords(logPath: string): AuditRecord[] {
     .flatMap((line) => {
       // A process killed mid-write can leave a partial final line behind.
       try {
-        return [JSON.parse(line)];
+        return [JSON.parse(line) as AuditRecord];
       } catch {
         return [];
       }
@@ -644,7 +652,7 @@ function collapse(grants: Set<string>): string[] {
   }
 
   // Prefer the project-relative grant first; it is the one reviewers care about.
-  const sorted = [...grants].toSorted((a, b) => {
+  const sorted = [...grants].sort((a, b) => {
     if (a === './') {
       return -1;
     }
@@ -744,7 +752,7 @@ function summarise(records: AuditRecord[]): Summary {
   for (const { permission, resource } of records) {
     switch (permission) {
       case 'FileSystemRead': {
-        const read = generalise(resource);
+        const read = generalise(resource, 'read');
         if (read) {
           summary.reads.add(read.grant);
           if (read.kind !== 'project') {
@@ -755,7 +763,7 @@ function summarise(records: AuditRecord[]): Summary {
       }
 
       case 'FileSystemWrite': {
-        const written = generalise(resource);
+        const written = generalise(resource, 'write');
         if (written) {
           summary.writes.add(written.grant);
           if (written.kind !== 'project') {
@@ -855,7 +863,7 @@ function report(summary: Summary): void {
     for (const [label, values] of details) {
       if (values.size > 0) {
         console.error(
-          `  ${label}: ${[...values].toSorted(compareStrings).join(', ')}`,
+          `  ${label}: ${[...values].sort(compareStrings).join(', ')}`,
         );
       }
     }
@@ -870,7 +878,7 @@ function report(summary: Summary): void {
     // Sorted by the same key the map is built from, so reads group before
     // writes and grants read in a stable order.
     const sorted = [...summary.escapes.entries()]
-      .toSorted(([a], [b]) => compareStrings(a, b))
+      .sort(([a], [b]) => compareStrings(a, b))
       .map(([, value]) => value);
 
     for (const { action, grant, count, cause } of sorted) {
