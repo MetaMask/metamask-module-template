@@ -162,12 +162,12 @@ type Grant = {
   /**
    * The grant as it will appear in the generated config.
    */
-  grant: string;
+  type: string;
 
   /**
    * Where the path sits: `project`, `token`, `probe`, or `outside`.
    */
-  kind: string;
+  location: string;
 };
 
 /**
@@ -447,7 +447,7 @@ function generalise(path: string, action: 'read' | 'write'): Grant | undefined {
   const target = resolve(path);
 
   if (action === 'read' && isResolutionProbe(target)) {
-    return { grant: '/', kind: 'probe' };
+    return { type: '/', location: 'probe' };
   }
 
   const key = comparable(target);
@@ -457,16 +457,16 @@ function generalise(path: string, action: 'read' | 'write'): Grant | undefined {
     }
 
     if (token === './') {
-      return { grant: './', kind: 'project' };
+      return { type: './', location: 'project' };
     }
 
     // A variable pointing at a single file (a GitHub summary, say) is the whole
     // grant on its own.
     if (key === prefix) {
-      return { grant: token, kind: 'token' };
+      return { type: token, location: 'token' };
     }
 
-    return { grant: token, kind: 'token' };
+    return { type: token, location: 'token' };
   }
 
   // Outside anything recognisable, grant the top-level directory rather than a
@@ -478,7 +478,7 @@ function generalise(path: string, action: 'read' | 'write'): Grant | undefined {
   // top-level namespace to rewrite it to. Such a grant needs a human anyway,
   // and it is reported as an escape so that it gets one.
   const [, top] = target.split(sep);
-  return { grant: top ? `/${top}` : '/', kind: 'outside' };
+  return { type: top ? `/${top}` : '/', location: 'outside' };
 }
 
 /**
@@ -778,9 +778,9 @@ function summarise(records: AuditRecord[]): Summary {
       case 'FileSystemRead': {
         const read = generalise(resource, 'read');
         if (read) {
-          summary.reads.add(read.grant);
-          if (read.kind !== 'project') {
-            noteEscape('read', read.grant, resource);
+          summary.reads.add(read.type);
+          if (read.location !== 'project') {
+            noteEscape('read', read.type, resource);
           }
         }
         break;
@@ -789,9 +789,9 @@ function summarise(records: AuditRecord[]): Summary {
       case 'FileSystemWrite': {
         const written = generalise(resource, 'write');
         if (written) {
-          summary.writes.add(written.grant);
-          if (written.kind !== 'project') {
-            noteEscape('write', written.grant, resource);
+          summary.writes.add(written.type);
+          if (written.location !== 'project') {
+            noteEscape('write', written.type, resource);
           }
         }
         break;
