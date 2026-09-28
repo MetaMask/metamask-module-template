@@ -14,8 +14,10 @@ import { basename, dirname, isAbsolute, join, resolve, sep } from 'node:path';
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
 
-// Permissions that are a plain on/off switch in the generated config, keyed by
-// the permission name the audit channels report.
+/**
+ * Permissions that are a plain on/off switch in the generated config, keyed by
+ * the permission name the audit channels report.
+ */
 const BOOLEAN_FLAGS = {
   ChildProcess: '--allow-child-process',
   Net: '--allow-net',
@@ -26,9 +28,11 @@ const BOOLEAN_FLAGS = {
   FFI: '--allow-ffi',
 };
 
-// Environment variables worth expressing paths in terms of, most specific
-// first. Anything matching one of these keeps the config portable across
-// machines and CI runners.
+/**
+ * Environment variables worth expressing paths in terms of, most specific
+ * first. Anything matching one of these keeps the config portable across
+ * machines and CI runners.
+ */
 const ENV_TOKENS = [
   'GITHUB_STEP_SUMMARY',
   'GITHUB_OUTPUT',
@@ -45,21 +49,17 @@ const ENV_TOKENS = [
   'HOME',
 ];
 
-// `lavamoat/.runner-plugin.js` expands an environment variable only when it is
-// the entire value (`/^\$([A-Z_][A-Z0-9_]*)$/i`), so `$HOME/.cache` would reach
-// Node as a literal path. Grants are therefore always a bare token, even though
-// that is broader than the path that earned it. The causing path is reported
-// alongside, so the widening is reviewable.
-
-// The runner plugin sets `--allow-fs-tmp` whenever `--permission` is on, which
-// appends the temporary directory to `--allow-fs-write` cross-platform. Emitting
-// it again here would be redundant noise.
+/**
+ * Write permissions that are added implicitly by `lavamoat/.runner-plugin.js`.
+ */
 const RUNNER_PROVIDED_WRITES = new Set(['$TMPDIR']);
 
-// Files that module and workspace resolution probes for while walking from the
-// project directory up to the file system root. The hits are almost all misses,
-// but they are still audited, and granting each one would bake this machine's
-// directory layout into the config.
+/**
+ * Files that module and workspace resolution probes for while walking from the
+ * project directory up to the file system root. The hits are almost all misses,
+ * but they are still audited, and granting each one would bake this machine's
+ * directory layout into the config.
+ */
 const RESOLUTION_MARKERS = new Set([
   // Module and workspace resolution.
   '.git',
@@ -85,9 +85,11 @@ const RESOLUTION_MARKERS = new Set([
 const AUDIT_DIRECTORY = mkdtempSync(join(tmpdir(), 'permission-audit-'));
 const AUDIT_LOG = join(AUDIT_DIRECTORY, 'permissions.ndjson');
 
-// macOS and Windows resolve paths case-insensitively, and tools like
-// TypeScript probe with inconsistent casing. Comparing case-sensitively there
-// would leak absolute machine paths into the config as unmatched outsiders.
+/**
+ * macOS and Windows resolve paths case-insensitively, and tools like
+ * TypeScript probe with inconsistent casing. Comparing case-sensitively there
+ * would leak absolute machine paths into the config as unmatched outsiders.
+ */
 const CASE_INSENSITIVE =
   process.platform === 'darwin' || process.platform === 'win32';
 
