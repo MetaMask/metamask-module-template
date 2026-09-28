@@ -44,7 +44,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Enable permission audit for debug runs
         if: ${{ runner.debug == '1' && matrix.node-version == '26.x' }}
-        run: echo 'RUN=yarn audit --verbose' >> "$GITHUB_ENV"
+        run: echo 'RUN=yarn audit-script --verbose' >> "$GITHUB_ENV"
       - name: Build
         run: $RUN build
       - name: Require clean working directory
@@ -71,7 +71,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Enable permission audit for debug runs
         if: ${{ runner.debug == '1' && matrix.node-version == '26.x' }}
-        run: echo 'RUN=yarn audit --verbose' >> "$GITHUB_ENV"
+        run: echo 'RUN=yarn audit-script --verbose' >> "$GITHUB_ENV"
       - name: Lint
         run: $RUN lint
       - name: Validate RC changelog
@@ -104,7 +104,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Enable permission audit for debug runs
         if: ${{ runner.debug == '1' && matrix.node-version == '26.x' }}
-        run: echo 'RUN=yarn audit --verbose' >> "$GITHUB_ENV"
+        run: echo 'RUN=yarn audit-script --verbose' >> "$GITHUB_ENV"
       - name: Test
         run: $RUN test
       - name: Require clean working directory
@@ -133,7 +133,7 @@ jobs:
         run: rm yarn.lock && YARN_ENABLE_IMMUTABLE_INSTALLS=false yarn
       - name: Enable permission audit for debug runs
         if: ${{ runner.debug == '1' && matrix.node-version == '26.x' }}
-        run: echo 'RUN=yarn audit --verbose' >> "$GITHUB_ENV"
+        run: echo 'RUN=yarn audit-script --verbose' >> "$GITHUB_ENV"
       - name: Test
         run: $RUN test
       - name: Restore lockfile

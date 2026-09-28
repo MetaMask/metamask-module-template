@@ -27,7 +27,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
-    "audit": "node ./scripts/audit.ts",
+    "audit-script": "node ./scripts/audit-script.ts",
     "build": "tsc --project tsconfig.build.json",
     "build:docs": "typedoc",
     "lint": "yarn lint:oxlint && yarn lint:constraints && yarn lint:misc --check && yarn lint:dependencies --check && yarn lint:changelog",
@@ -91,7 +91,7 @@
   },
   "scriptsConfig": {
     "#default": "lavamoat/scripts.strict.json",
-    "audit": "lavamoat/scripts.yarn.json",
+    "audit-script": "lavamoat/scripts.yarn.json",
     "build": "lavamoat/scripts.build.json",
     "lint": "lavamoat/scripts.yarn.json",
     "lint:changelog": "lavamoat/scripts.lint.json",
