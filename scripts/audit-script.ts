@@ -125,8 +125,12 @@ type Options = {
 /**
  * A directory that absolute paths are rewritten relative to, turning a machine
  * specific path into a portable grant.
+ *
+ * Matching is anchored at the start of the path, which is what makes the
+ * longest entry the most specific one: every token names a place to start
+ * from, never a segment that could appear part way along.
  */
-type Prefix = {
+type PortablePrefix = {
   /**
    * The absolute path to match, normalised for comparison.
    */
@@ -334,13 +338,13 @@ function canonicalisePath(path: string): string {
 }
 
 /**
- * Build the prefix table used to rewrite absolute paths into portable tokens,
- * longest first so the most specific prefix wins.
+ * Build the table used to rewrite absolute paths into portable tokens, longest
+ * first so the most specific prefix wins.
  *
- * @returns The prefix table.
+ * @returns The prefixes, most specific first.
  */
-function buildPortableSubstitutes(): Prefix[] {
-  const prefixes: Prefix[] = [];
+function buildPortablePrefixes(): PortablePrefix[] {
+  const prefixes: PortablePrefix[] = [];
 
   /**
    * Register a path and its canonical form under the same token.
@@ -373,7 +377,7 @@ function buildPortableSubstitutes(): Prefix[] {
   return prefixes.sort((a, b) => b.prefix.length - a.prefix.length);
 }
 
-const PREFIXES = buildPortableSubstitutes();
+const PORTABLE_PREFIXES = buildPortablePrefixes();
 
 /**
  * Build the set of directories between the project and the filesystem root.
@@ -456,19 +460,13 @@ function tryCreatingGrant(
   }
 
   const key = buildComparablePath(target);
-  for (const { prefix, token } of PREFIXES) {
+  for (const { prefix, token } of PORTABLE_PREFIXES) {
     if (key !== prefix && !key.startsWith(prefix + sep)) {
       continue;
     }
 
     if (token === './') {
       return { type: './', location: 'project' };
-    }
-
-    // A variable pointing at a single file (a GitHub summary, say) is the whole
-    // grant on its own.
-    if (key === prefix) {
-      return { type: token, location: 'token' };
     }
 
     return { type: token, location: 'token' };
