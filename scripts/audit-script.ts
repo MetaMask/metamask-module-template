@@ -103,6 +103,13 @@ type Options = {
   scriptName: string;
 
   /**
+   * Anything this script does not recognise, handed to the audited script
+   * rather than interpreted here, so that auditing a command that takes
+   * arguments reads the same as running it: `audit test --coverage`.
+   */
+  scriptArgs: string[];
+
+  /**
    * Where to write the generated config, or `undefined` to write it to
    * standard output.
    */
@@ -113,13 +120,6 @@ type Options = {
    * was chosen, rather than printing the config alone.
    */
   verbose: boolean;
-
-  /**
-   * Anything this script does not recognise, handed to the audited script
-   * rather than interpreted here, so that auditing a command that takes
-   * arguments reads the same as running it: `audit test --coverage`.
-   */
-  passthrough: string[];
 };
 
 /**
@@ -592,16 +592,16 @@ const COLLECTOR_URL = `data:text/javascript,${encodeURIComponent(
  * Run the audited script and resolve with its exit status.
  *
  * @param scriptName - The name of the script to run.
+ * @param scriptArgs - Arguments to hand to the script.
  * @param verbose - Whether to include verbose output.
  * @param logPath - Where the collector should append records.
- * @param passthrough - Arguments to hand to the script itself.
  * @returns The exit code.
  */
 async function runScript(
   scriptName: string,
+  scriptArgs: string[],
   verbose: boolean,
   logPath: string,
-  passthrough: string[],
 ): Promise<number> {
   return new Promise((resolveRun) => {
     const flags = [
@@ -613,8 +613,8 @@ async function runScript(
     // `node --run` forwards everything after its own `--` to the script, so
     // auditing a command with arguments works the same as running it.
     const args = ['--run', scriptName];
-    if (passthrough.length > 0) {
-      args.push('--', ...passthrough);
+    if (scriptArgs.length > 0) {
+      args.push('--', ...scriptArgs);
     }
 
     const child = spawn('node', args, {
@@ -726,11 +726,11 @@ async function parseArgv(): Promise<Options> {
 
   return {
     scriptName: argv.script,
-    outPath: argv.out,
-    verbose: argv.verbose,
     // Unrecognised arguments belong to the audited script. Mapped because the
     // parser types them loosely, having no way to know they are strings.
-    passthrough: argv._.map(String),
+    scriptArgs: argv._.map(String),
+    outPath: argv.out,
+    verbose: argv.verbose,
   };
 }
 
@@ -932,8 +932,8 @@ function report(summary: Summary): void {
  * granting exactly those.
  */
 async function main(): Promise<void> {
-  const { scriptName, outPath, verbose, passthrough } = await parseArgv();
-  const exitCode = await runScript(scriptName, verbose, AUDIT_LOG, passthrough);
+  const { scriptName, outPath, verbose, scriptArgs } = await parseArgv();
+  const exitCode = await runScript(scriptName, scriptArgs, verbose, AUDIT_LOG);
   const records = readAuditLog(AUDIT_LOG);
 
   rmSync(AUDIT_DIRECTORY, { recursive: true, force: true });
