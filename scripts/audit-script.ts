@@ -90,7 +90,7 @@ const AUDIT_LOG = join(AUDIT_DIRECTORY, 'permissions.ndjson');
  * TypeScript probe with inconsistent casing. Comparing case-sensitively there
  * would leak absolute machine paths into the config as unmatched outsiders.
  */
-const CASE_INSENSITIVE =
+const USE_CASE_INSENSITIVE_PATHS =
   process.platform === 'darwin' || process.platform === 'win32';
 
 /**
@@ -294,7 +294,7 @@ type Config = {
  * @returns The comparison key.
  */
 function comparable(path: string): string {
-  return CASE_INSENSITIVE ? path.toLowerCase() : path;
+  return USE_CASE_INSENSITIVE_PATHS ? path.toLowerCase() : path;
 }
 
 /**
