@@ -840,12 +840,9 @@ function buildConfig(
   scriptName: string,
   exitCode: number,
 ): Config {
-  // Reads have to cover writes, and the project directory is always readable.
   const reads = new Set([...summary.reads, ...summary.writes, './']);
-
-  // The runner grants the temporary directory for writing only, so a tmp read
-  // still has to be requested above.
   const writes = new Set(summary.writes);
+
   for (const grant of RUNNER_PROVIDED_WRITES) {
     writes.delete(grant);
   }
@@ -949,8 +946,6 @@ async function main(): Promise<void> {
         `permission it needs. Fix the failure and re-run for a complete config.`,
     );
 
-    // The output that would explain the failure was discarded, so point at the
-    // flag that keeps it.
     if (!verbose) {
       console.error(
         `Re-run with --verbose to see the script's output and diagnose it.`,
