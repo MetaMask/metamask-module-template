@@ -293,7 +293,7 @@ type Config = {
  * @param path - The path to normalise.
  * @returns The comparison key.
  */
-function comparable(path: string): string {
+function buildComparablePath(path: string): string {
   return USE_CASE_INSENSITIVE_PATHS ? path.toLowerCase() : path;
 }
 
@@ -325,7 +325,7 @@ function compareStrings(a: string, b: string): number {
  * @param path - The path to resolve.
  * @returns The canonical path, or the original on failure.
  */
-function canonical(path: string): string {
+function canonicalisePath(path: string): string {
   try {
     return realpathSync(path);
   } catch {
@@ -339,7 +339,7 @@ function canonical(path: string): string {
  *
  * @returns The prefix table.
  */
-function buildPrefixes(): Prefix[] {
+function buildPortableSubstitutes(): Prefix[] {
   const prefixes: Prefix[] = [];
 
   /**
@@ -353,8 +353,8 @@ function buildPrefixes(): Prefix[] {
       return;
     }
 
-    for (const variant of new Set([resolve(path), canonical(path)])) {
-      prefixes.push({ prefix: comparable(variant), token });
+    for (const variant of new Set([resolve(path), canonicalisePath(path)])) {
+      prefixes.push({ prefix: buildComparablePath(variant), token });
     }
   };
 
@@ -373,7 +373,7 @@ function buildPrefixes(): Prefix[] {
   return prefixes.sort((a, b) => b.prefix.length - a.prefix.length);
 }
 
-const PREFIXES = buildPrefixes();
+const PREFIXES = buildPortableSubstitutes();
 
 /**
  * Build the set of directories between the project and the filesystem root.
@@ -387,7 +387,9 @@ function buildAncestors(): Set<string> {
   let parent = dirname(directory);
 
   while (parent !== directory) {
-    ancestors.add(comparable(parent)).add(comparable(canonical(parent)));
+    ancestors
+      .add(buildComparablePath(parent))
+      .add(buildComparablePath(canonicalisePath(parent)));
     directory = parent;
     parent = dirname(directory);
   }
@@ -405,15 +407,15 @@ const ANCESTORS = buildAncestors();
  * @returns True if the path is a resolution probe.
  */
 function isResolutionProbe(target: string): boolean {
-  const key = comparable(target);
+  const key = buildComparablePath(target);
 
   if (ANCESTORS.has(key)) {
     return true;
   }
 
   if (
-    ANCESTORS.has(comparable(dirname(target))) &&
-    RESOLUTION_MARKERS.has(comparable(basename(target)))
+    ANCESTORS.has(buildComparablePath(dirname(target))) &&
+    RESOLUTION_MARKERS.has(buildComparablePath(basename(target)))
   ) {
     return true;
   }
@@ -439,7 +441,10 @@ function isResolutionProbe(target: string): boolean {
  * widened to the whole file system.
  * @returns The classified grant, or undefined if the path is unusable.
  */
-function generalise(path: string, action: 'read' | 'write'): Grant | undefined {
+function tryCreatingGrant(
+  path: string,
+  action: 'read' | 'write',
+): Grant | undefined {
   if (!path || !isAbsolute(path)) {
     return undefined;
   }
@@ -450,7 +455,7 @@ function generalise(path: string, action: 'read' | 'write'): Grant | undefined {
     return { type: '/', location: 'probe' };
   }
 
-  const key = comparable(target);
+  const key = buildComparablePath(target);
   for (const { prefix, token } of PREFIXES) {
     if (key !== prefix && !key.startsWith(prefix + sep)) {
       continue;
@@ -640,7 +645,7 @@ async function runScript(
  * @param logPath - The log to read.
  * @returns The parsed records.
  */
-function readRecords(logPath: string): AuditRecord[] {
+function readAuditLog(logPath: string): AuditRecord[] {
   let contents;
   try {
     contents = readFileSync(logPath, 'utf8');
@@ -740,7 +745,7 @@ async function parseArgv(): Promise<Options> {
  * @param records - Every record the collector wrote.
  * @returns The summarised permissions.
  */
-function summarise(records: AuditRecord[]): Summary {
+function summariseAudit(records: AuditRecord[]): Summary {
   const summary: Summary = {
     reads: new Set<string>(),
     writes: new Set<string>(),
@@ -757,7 +762,7 @@ function summarise(records: AuditRecord[]): Summary {
    * @param grant - The grant that was emitted.
    * @param cause - The path responsible.
    */
-  const noteEscape = (
+  const addEscape = (
     action: 'read' | 'write',
     grant: string,
     cause: string,
@@ -776,22 +781,22 @@ function summarise(records: AuditRecord[]): Summary {
   for (const { permission, resource } of records) {
     switch (permission) {
       case 'FileSystemRead': {
-        const read = generalise(resource, 'read');
+        const read = tryCreatingGrant(resource, 'read');
         if (read) {
           summary.reads.add(read.type);
           if (read.location !== 'project') {
-            noteEscape('read', read.type, resource);
+            addEscape('read', read.type, resource);
           }
         }
         break;
       }
 
       case 'FileSystemWrite': {
-        const written = generalise(resource, 'write');
+        const written = tryCreatingGrant(resource, 'write');
         if (written) {
           summary.writes.add(written.type);
           if (written.location !== 'project') {
-            noteEscape('write', written.type, resource);
+            addEscape('write', written.type, resource);
           }
         }
         break;
@@ -931,7 +936,7 @@ function report(summary: Summary): void {
 async function main(): Promise<void> {
   const { scriptName, outPath, verbose, passthrough } = await parseArgv();
   const exitCode = await runScript(scriptName, verbose, AUDIT_LOG, passthrough);
-  const records = readRecords(AUDIT_LOG);
+  const records = readAuditLog(AUDIT_LOG);
 
   rmSync(AUDIT_DIRECTORY, { recursive: true, force: true });
 
@@ -955,7 +960,7 @@ async function main(): Promise<void> {
     }
   }
 
-  const summary = summarise(records);
+  const summary = summariseAudit(records);
   const config = buildConfig(summary, scriptName, exitCode);
   const json = `${JSON.stringify(config, undefined, 2)}\n`;
 
