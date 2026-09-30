@@ -610,8 +610,11 @@ async function runScript(
       env: {
         // eslint-disable-next-line n/no-process-env
         ...process.env,
-        PERMISSION_AUDIT_LOG: logPath,
         NODE_OPTIONS: flags.join(' '),
+
+        // The `collect` function (which we are loading alongside the script
+        // we want to audit) uses this log file to capture detected permissions.
+        PERMISSION_AUDIT_LOG: logPath,
       },
     });
 
