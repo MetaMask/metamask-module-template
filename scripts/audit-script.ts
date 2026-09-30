@@ -382,26 +382,27 @@ const PORTABLE_PREFIXES = buildPortablePrefixes();
 /**
  * Build the set of directories between the project and the filesystem root.
  *
+ * @param projectPath - The path to the project.
  * @returns Every strict ancestor of the project directory.
  */
-function buildAncestors(): Set<string> {
+function buildProjectAncestors(projectPath: string): Set<string> {
   const ancestors = new Set<string>();
 
-  let directory = process.cwd();
-  let parent = dirname(directory);
+  let currentDirectory = projectPath;
+  let parentDirectory = dirname(currentDirectory);
 
-  while (parent !== directory) {
+  while (parentDirectory !== currentDirectory) {
     ancestors
-      .add(buildComparablePath(parent))
-      .add(buildComparablePath(canonicalisePath(parent)));
-    directory = parent;
-    parent = dirname(directory);
+      .add(buildComparablePath(parentDirectory))
+      .add(buildComparablePath(canonicalisePath(parentDirectory)));
+    currentDirectory = parentDirectory;
+    parentDirectory = dirname(currentDirectory);
   }
 
   return ancestors;
 }
 
-const ANCESTORS = buildAncestors();
+const PROJECT_ANCESTORS = buildProjectAncestors(process.cwd());
 
 /**
  * Decide whether a path is module resolution walking up the directory tree
@@ -413,12 +414,12 @@ const ANCESTORS = buildAncestors();
 function isResolutionProbe(target: string): boolean {
   const key = buildComparablePath(target);
 
-  if (ANCESTORS.has(key)) {
+  if (PROJECT_ANCESTORS.has(key)) {
     return true;
   }
 
   if (
-    ANCESTORS.has(buildComparablePath(dirname(target))) &&
+    PROJECT_ANCESTORS.has(buildComparablePath(dirname(target))) &&
     RESOLUTION_MARKERS.has(buildComparablePath(basename(target)))
   ) {
     return true;
@@ -426,7 +427,7 @@ function isResolutionProbe(target: string): boolean {
 
   // Node walks every ancestor's `node_modules` looking for a dependency, so
   // those hits describe the machine's directory layout rather than the script.
-  for (const ancestor of ANCESTORS) {
+  for (const ancestor of PROJECT_ANCESTORS) {
     const modules = join(ancestor, 'node_modules');
     if (key === modules || key.startsWith(modules + sep)) {
       return true;
