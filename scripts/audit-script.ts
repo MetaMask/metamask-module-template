@@ -863,7 +863,7 @@ function buildConfig(
  *
  * @param summary - What the audited script exercised.
  */
-function report(summary: Summary): void {
+function reportSummary(summary: Summary): void {
   const details: [label: string, values: Set<string>][] = [
     ['network hosts', summary.hosts],
     ['child commands', summary.commands],
@@ -944,7 +944,7 @@ async function main(): Promise<void> {
   }
 
   if (verbose) {
-    report(summary);
+    reportSummary(summary);
   }
 
   // Pass the script's own failure on, so that auditing a command can stand in
