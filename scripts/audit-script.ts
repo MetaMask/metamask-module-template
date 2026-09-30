@@ -851,15 +851,7 @@ function buildConfig(
 }
 
 /**
- * Report the detail that does not fit the config format, but matters when
- * reviewing it.
- *
- * Written to standard output, alongside the config rather than beside it. A
- * reader merging two streams — a CI runner, say — orders them by arrival and
- * can drop this report into the middle of the JSON. One stream keeps it in
- * the order it was written. That leaves standard output human-facing under
- * `--verbose`, which is the point of the flag; use `--out` when the config
- * needs to be machine-readable.
+ * Surfaces details from the permission audit that are helpful for review.
  *
  * @param summary - What the audited script exercised.
  */
