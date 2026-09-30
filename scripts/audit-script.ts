@@ -302,13 +302,9 @@ function buildComparablePath(path: string): string {
 }
 
 /**
- * Compare two strings by code unit, for sorting.
- *
- * `localeCompare` is deliberately not used here. It orders by locale rules,
- * which weight punctuation and case differently from one machine to the next,
- * so `/` and `$TMPDIR` can swap places depending on who ran the script. Both
- * the generated config and the report get committed and diffed, so their
- * ordering has to be identical everywhere rather than merely readable.
+ * Compare two strings alphabetically. This is the same comparator `sort` uses
+ * by default. We define it here so that we can use it in places where we are
+ * using a more complex sorting strategy, and we need a default fallback.
  *
  * @param a - The first string.
  * @param b - The second string.
@@ -878,9 +874,7 @@ function report(summary: Summary): void {
 
     for (const [label, values] of details) {
       if (values.size > 0) {
-        console.log(
-          `  ${label}: ${[...values].sort(compareStrings).join(', ')}`,
-        );
+        console.log(`  ${label}: ${[...values].sort().join(', ')}`);
       }
     }
   }
