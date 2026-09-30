@@ -486,18 +486,11 @@ function tryCreatingGrant(
 }
 
 /**
- * Subscribe to the permission audit channels and append everything they report
- * to the log named by `PERMISSION_AUDIT_LOG`.
+ * Collect the permissions that a script accesses via Node's diagnostics
+ * channel, writing them to the log named by `PERMISSION_AUDIT_LOG`.
  *
- * This runs in the audited process, not in this one. It is serialised with
- * `Function.prototype.toString` and injected via `--import`, so it must be
- * entirely self-contained: it cannot reference anything declared outside its
- * own body, and it has to reach for built-ins with dynamic `import` rather
- * than the static imports at the top of this file. Keeping it here as real
- * code, rather than as a string, is what lets it be linted and formatted
- * alongside everything else.
- *
- * @returns A promise that resolves once the channels are subscribed.
+ * Note that this function does not run in this process, but the process
+ * responsible for auditing permissions (see {@link runScript}).
  */
 async function collect(): Promise<void> {
   // eslint-disable-next-line n/no-process-env
@@ -509,6 +502,8 @@ async function collect(): Promise<void> {
     return;
   }
 
+  // Because this function runs in a separate process, it cannot reference
+  // imports outside of itself.
   const { channel } = await import('node:diagnostics_channel');
   const { closeSync, openSync, writeSync } = await import('node:fs');
 
@@ -521,13 +516,8 @@ async function collect(): Promise<void> {
 
   let writing = false;
 
-  /**
-   * Append a single permission record to the shared audit log.
-   *
-   * @param permission - The permission being exercised.
-   * @param resource - The resource it applies to, if any.
-   */
-  const write = (permission: string, resource: string): void => {
+  const listener: ChannelListener = (message: unknown): void => {
+    const { permission, resource } = message as PermissionMessage;
     if (writing || ignored.has(resource)) {
       return;
     }
@@ -553,18 +543,6 @@ async function collect(): Promise<void> {
     }
   };
 
-  /**
-   * Forward a published permission check to the audit log. The same listener
-   * serves every channel, since the payload identifies the permission.
-   *
-   * @param message - The payload the channel published.
-   */
-  const listener: ChannelListener = (message: unknown): void => {
-    const { permission, resource } = message as PermissionMessage;
-
-    write(permission, resource);
-  };
-
   for (const name of [
     'fs',
     'net',
@@ -583,8 +561,11 @@ async function collect(): Promise<void> {
   });
 }
 
-// `--import` evaluates this before the entry point, and awaits top-level await,
-// so the channels are subscribed before the audited script can touch anything.
+/**
+ * Holds a mini-script that simply runs the `collect` function. This script is
+ * loaded alongside the script that we want to audit so that we can collect
+ * its accessed permissions (see {@link runScript}).
+ */
 const COLLECTOR_URL = `data:text/javascript,${encodeURIComponent(
   `await (${collect.toString()})()`,
 )}`;
