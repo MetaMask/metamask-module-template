@@ -169,9 +169,9 @@ type Grant = {
   type: string;
 
   /**
-   * Where the path sits: `project`, `token`, `probe`, or `outside`.
+   * Where the path sits.
    */
-  location: string;
+  location: 'project' | 'token' | 'ancestor' | 'outside';
 };
 
 /**
@@ -401,13 +401,13 @@ function buildProjectAncestors(projectPath: string): Set<string> {
 const PROJECT_ANCESTORS = buildProjectAncestors(process.cwd());
 
 /**
- * Decide whether a path is module resolution walking up the directory tree
- * rather than a genuine dependency of the script.
+ * Decide whether a path was read only because a tool searched upwards from the
+ * project for a dependency or a configuration file.
  *
  * @param target - The resolved path from an audit record.
- * @returns True if the path is a resolution probe.
+ * @returns True if the path is a by-product of such a search.
  */
-function isResolutionProbe(target: string): boolean {
+function isAncestorSearchPath(target: string): boolean {
   const key = buildComparablePath(target);
 
   if (PROJECT_ANCESTORS.has(key)) {
@@ -452,8 +452,8 @@ function tryCreatingGrant(
 
   const target = resolve(path);
 
-  if (action === 'read' && isResolutionProbe(target)) {
-    return { type: '/', location: 'probe' };
+  if (action === 'read' && isAncestorSearchPath(target)) {
+    return { type: '/', location: 'ancestor' };
   }
 
   const key = buildComparablePath(target);
