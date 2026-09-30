@@ -856,26 +856,25 @@ function buildConfig(
  * @param summary - What the audited script exercised.
  */
 function reportSummary(summary: Summary): void {
+  console.log('');
   const details: [label: string, values: Set<string>][] = [
-    ['network hosts', summary.hosts],
-    ['child commands', summary.commands],
+    ['Network hosts', summary.hosts],
+    ['Child commands', summary.commands],
   ];
 
   if (details.some(([, values]) => values.size > 0)) {
-    console.log('\nObserved detail behind the boolean flags:');
-
     for (const [label, values] of details) {
       if (values.size > 0) {
-        console.log(`  ${label}: ${[...values].sort().join(', ')}`);
+        console.log(`${label}:`);
+        for (const value of [...values].sort()) {
+          console.log(`  - ${value}`);
+        }
       }
     }
   }
 
   if (summary.escapes.size > 0) {
-    console.log(
-      '\nGrants reaching outside the project, with an example of the',
-    );
-    console.log('path that caused each one:');
+    console.log('\nGrants reaching outside the project:');
 
     // Sorted by the same key the map is built from, so reads group before
     // writes and grants read in a stable order.
@@ -884,13 +883,13 @@ function reportSummary(summary: Summary): void {
       .map(([, value]) => value);
 
     for (const { action, grant, count, cause } of sorted) {
-      const more = count > 1 ? ` (+${count - 1} more)` : '';
+      const more = count > 1 ? `, +${count - 1} more` : '';
       const provided =
         action === 'write' && RUNNER_PROVIDED_WRITES.has(grant)
-          ? ' [omitted; the runner grants this]'
+          ? ' [implicit]'
           : '';
 
-      console.log(`  ${action} ${grant}  ${cause}${more}${provided}`);
+      console.log(`  ${action} ${grant} (e.g. ${cause}${more})${provided}`);
     }
   }
 }
