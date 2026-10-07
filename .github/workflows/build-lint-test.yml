@@ -2,6 +2,12 @@ name: Build, Lint, and Test
 
 on:
   workflow_call:
+    secrets:
+      WIZ_SENSOR_TOKEN:
+        description: >-
+          Optional Wiz GitHub runner sensor token. The sensor no-ops when this
+          is unset or when the org variable WIZ_SENSOR_ENABLED is not true.
+        required: false
 
 permissions:
   contents: read
@@ -23,6 +29,8 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
+          wiz-sensor-enabled: ${{ vars.WIZ_SENSOR_ENABLED }}
+          wiz-sensor-token: ${{ secrets.WIZ_SENSOR_TOKEN }}
           is-high-risk-environment: false
           persist-credentials: false
           node-version: ${{ matrix.node-version }}
@@ -39,6 +47,8 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
+          wiz-sensor-enabled: ${{ vars.WIZ_SENSOR_ENABLED }}
+          wiz-sensor-token: ${{ secrets.WIZ_SENSOR_TOKEN }}
           is-high-risk-environment: false
           persist-credentials: false
           node-version: ${{ matrix.node-version }}
@@ -66,6 +76,8 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
+          wiz-sensor-enabled: ${{ vars.WIZ_SENSOR_ENABLED }}
+          wiz-sensor-token: ${{ secrets.WIZ_SENSOR_TOKEN }}
           is-high-risk-environment: false
           persist-credentials: false
           node-version: ${{ matrix.node-version }}
@@ -99,6 +111,8 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
+          wiz-sensor-enabled: ${{ vars.WIZ_SENSOR_ENABLED }}
+          wiz-sensor-token: ${{ secrets.WIZ_SENSOR_TOKEN }}
           is-high-risk-environment: false
           persist-credentials: false
           node-version: ${{ matrix.node-version }}
@@ -126,6 +140,8 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
+          wiz-sensor-enabled: ${{ vars.WIZ_SENSOR_ENABLED }}
+          wiz-sensor-token: ${{ secrets.WIZ_SENSOR_TOKEN }}
           is-high-risk-environment: false
           persist-credentials: false
           node-version: ${{ matrix.node-version }}

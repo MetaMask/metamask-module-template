@@ -31,3 +31,5 @@ jobs:
     needs: get-release-version
     with:
       destination_dir: rc-${{ needs.get-release-version.outputs.release-version }}
+    secrets:
+      WIZ_SENSOR_TOKEN: ${{ secrets.WIZ_SENSOR_TOKEN }}
