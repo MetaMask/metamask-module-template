@@ -37,6 +37,7 @@ jobs:
         if: ${{ steps.get-token.outcome == 'success' }}
         uses: MetaMask/action-checkout-and-setup@v3
         with:
+          wiz-sensor-enabled: ${{ vars.WIZ_SENSOR_ENABLED }}
           wiz-sensor-token: ${{ secrets.WIZ_SENSOR_TOKEN }}
           is-high-risk-environment: true
           persist-credentials: false

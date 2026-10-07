@@ -29,6 +29,7 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
+          wiz-sensor-enabled: ${{ vars.WIZ_SENSOR_ENABLED }}
           wiz-sensor-token: ${{ secrets.WIZ_SENSOR_TOKEN }}
           is-high-risk-environment: false
           persist-credentials: false
@@ -46,6 +47,7 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
+          wiz-sensor-enabled: ${{ vars.WIZ_SENSOR_ENABLED }}
           wiz-sensor-token: ${{ secrets.WIZ_SENSOR_TOKEN }}
           is-high-risk-environment: false
           persist-credentials: false
@@ -74,6 +76,7 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
+          wiz-sensor-enabled: ${{ vars.WIZ_SENSOR_ENABLED }}
           wiz-sensor-token: ${{ secrets.WIZ_SENSOR_TOKEN }}
           is-high-risk-environment: false
           persist-credentials: false
@@ -108,6 +111,7 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
+          wiz-sensor-enabled: ${{ vars.WIZ_SENSOR_ENABLED }}
           wiz-sensor-token: ${{ secrets.WIZ_SENSOR_TOKEN }}
           is-high-risk-environment: false
           persist-credentials: false
@@ -136,6 +140,7 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
+          wiz-sensor-enabled: ${{ vars.WIZ_SENSOR_ENABLED }}
           wiz-sensor-token: ${{ secrets.WIZ_SENSOR_TOKEN }}
           is-high-risk-environment: false
           persist-credentials: false
