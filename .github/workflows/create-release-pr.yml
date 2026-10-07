@@ -30,6 +30,7 @@ jobs:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v3
         with:
+          wiz-sensor-token: ${{ secrets.WIZ_SENSOR_TOKEN }}
           is-high-risk-environment: true
           persist-credentials: false
 

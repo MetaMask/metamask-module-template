@@ -6,6 +6,12 @@ on:
       destination_dir:
         required: true
         type: string
+    secrets:
+      WIZ_SENSOR_TOKEN:
+        description: >-
+          Optional Wiz GitHub runner sensor token. The sensor no-ops when this
+          is unset or when the org variable WIZ_SENSOR_ENABLED is not true.
+        required: false
 
 jobs:
   publish-docs-to-gh-pages:
@@ -31,6 +37,7 @@ jobs:
         if: ${{ steps.get-token.outcome == 'success' }}
         uses: MetaMask/action-checkout-and-setup@v3
         with:
+          wiz-sensor-token: ${{ secrets.WIZ_SENSOR_TOKEN }}
           is-high-risk-environment: true
           persist-credentials: false
       - name: Run build script

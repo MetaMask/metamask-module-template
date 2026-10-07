@@ -13,3 +13,5 @@ jobs:
     uses: ./.github/workflows/publish-docs.yml
     with:
       destination_dir: staging
+    secrets:
+      WIZ_SENSOR_TOKEN: ${{ secrets.WIZ_SENSOR_TOKEN }}
